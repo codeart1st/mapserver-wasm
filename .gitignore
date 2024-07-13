@@ -1,0 +1,4 @@
+node_modules/
+dist/
+test/assets/garbage.gpkg
+src/*.o

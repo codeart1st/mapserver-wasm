@@ -1,0 +1,38 @@
+MAP
+  DEBUG 5
+  CONFIG "MS_ERRORFILE" "error.log"
+  CONFIG "CPL_LOG" "error.log"
+  CONFIG "CPL_DEBUG" "ON"
+  CONFIG "CPL_LOG_ERRORS" "ON"
+  CONFIG "CPL_TIMESTAMP" "ON"
+  CONFIG "PROJ_LIB" "/proj/"
+
+  PROJECTION
+    "init=epsg:3857"
+  END
+
+  WEB
+    METADATA
+      "wms_onlineresource" "http://localhost?"
+      "wms_enable_request" "*"
+      "wms_srs" "EPSG:3857 EPSG:4326"
+      "wms_allow_getmap_without_styles" "true"
+    END
+  END
+
+  LAYER
+    NAME testraster
+    TYPE RASTER
+    DEBUG 5
+    DATA "/ms/testraster.gpkg"
+
+    PROJECTION
+      "init=epsg:3857"
+    END
+
+    METADATA
+      "ows_title" "testraster"
+      "wms_srs" "EPSG:3857 EPSG:4326"
+    END
+  END
+END

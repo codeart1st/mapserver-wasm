@@ -1,0 +1,215 @@
+image: emscripten/emsdk:3.1.58
+
+stages:
+  - deps
+  - build
+  - test
+  - release
+
+libxml2:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/libxml2
+  script:
+    - apt-get update && apt-get install -y automake pkgconf libtool
+    - cd thirdparty/libxml2
+    - NOCONFIGURE=1 ./autogen.sh # omit the auto included configure step here
+    - emconfigure ./configure --disable-shared --prefix=$CI_PROJECT_DIR/dist
+      --with-http=no --with-python=no --with-threads=no --with-zlib=no
+      --with-modules=no --with-c14n=no --with-catalog=no --with-debug=no
+      --with-html=no --with-iconv=no --with-iso8859x=no --with-legacy=no
+      --with-push=no --with-reader=no --with-readline=no --with-regexps=no
+      --with-valid=no --with-writer=no --with-xinclude=no --with-lzma=no
+      --with-schematron=no --with-schemas=yes
+    - emmake make install -j$(nproc)
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+
+SQLite:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/sqlite
+  script:
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tcl
+    - cd thirdparty/sqlite
+    - git apply ../../patches/sqlite_fix_build.patch
+    - export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE
+      -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS
+      -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS
+      -DSQLITE_OMIT_GENERATED_COLUMNS -DSQLITE_OMIT_HEX_INTEGER -DSQLITE_OMIT_INTEGRITY_CHECK -DSQLITE_OMIT_INTROSPECTION_PRAGMAS
+      -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_REINDEX -DSQLITE_OMIT_TCL_VARIABLE -DSQLITE_OMIT_TRACE
+      -DSQLITE_OMIT_TRUNCATE_OPTIMIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_AUTHORIZATION"
+    - export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+      -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
+    - ./configure --disable-shared --prefix=$CI_PROJECT_DIR/dist
+    - make sqlite3.c # build amalgamation without emscripten
+    - emconfigure ./configure --disable-shared --prefix=$CI_PROJECT_DIR/dist
+    - emmake make install -j$(nproc)
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+
+GEOS:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/geos
+  script:
+    - cd thirdparty/geos
+    - mkdir -p build && cd build
+    - emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/dist -DBUILD_TESTING=OFF ..
+    - emmake make install -j$(nproc)
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+
+PROJ:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/PROJ
+  script:
+    - cd thirdparty/PROJ
+    - git apply ../../patches/proj_fix_build.patch
+    - mkdir -p build && cd build
+    - emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+      -DCMAKE_CXX_FLAGS=-fwasm-exceptions
+      -DBUILD_TESTING=OFF -DSQLITE3_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include
+      -DSQLITE3_LIBRARY=$CI_PROJECT_DIR/dist/libsqlite3.a -DEXE_SQLITE3=$CI_PROJECT_DIR/dist/bin
+      -DENABLE_TIFF=OFF -DENABLE_CURL=OFF -DBUILD_APPS=OFF -DCMAKE_C_IMPLICIT_LINK_LIBRARIES=" "
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/dist -DBUILD_TESTING=OFF ..
+    - emmake make install -j$(nproc)
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+  needs: ["SQLite"]
+
+GDAL:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/gdal
+  script:
+    - EM_DATA=$EMSDK/upstream/emscripten
+    - EM_CACHE=$EM_DATA/cache
+    - touch temp.c # trigger port loading
+    - emcc -c -s SUPPORT_LONGJMP=wasm -s USE_ZLIB=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 temp.c
+    - cd thirdparty/gdal
+    - git apply ../../patches/gdal_reduce_size.patch
+    - mkdir -p build && cd build
+    - emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$CI_PROJECT_DIR/dist
+      -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm"
+      -DPROJ_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include -DPROJ_LIBRARY=$CI_PROJECT_DIR/dist/lib/libproj.a
+      -DSQLite3_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include -DSQLite3_LIBRARY=$CI_PROJECT_DIR/dist/lib/libsqlite3.a
+      -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a
+      -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF
+      -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/dist -DBUILD_TESTING=OFF ..
+    - emmake make install -j$(nproc)
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+  needs: ["SQLite", "PROJ"]
+
+MapServer:
+  stage: deps
+  tags:
+    - docker
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: thirdparty/mapserver
+  script:
+    - EM_DATA=$EMSDK/upstream/emscripten
+    - EM_CACHE=$EM_DATA/cache
+    - touch temp.c # trigger port loading
+    - emcc -c -s SUPPORT_LONGJMP=wasm -s USE_ZLIB=1 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 temp.c
+    - cd thirdparty/mapserver
+    - mkdir -p build && cd build
+    - emcmake cmake -DCMAKE_BUILD_TYPE=Release -DWITH_FRIBIDI=OFF -DWITH_HARFBUZZ=OFF -DWITH_ICONV=OFF -DWITH_CAIRO=OFF -DWITH_FCGI=OFF
+      -DWITH_POSTGIS=OFF -DWITH_WCS=OFF -DWITH_GIF=OFF -DWITH_PROTOBUFC=OFF -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm"
+      -DFREETYPE_INCLUDE_DIR=$EM_CACHE/sysroot/include/freetype2 -DFREETYPE_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
+      -DJPEG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DJPEG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
+      -DPNG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
+      -DZLIB_INCLUDE_DIR=$EM_CACHE/sysroot/include -DZLIB_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
+      -DPROJ_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include -DPROJ_LIBRARY=$CI_PROJECT_DIR$CI_PROJECT_DIR/dist/lib
+      -DLIBXML2_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include/libxml2 -DLIBXML2_LIBRARY=$CI_PROJECT_DIR/dist/lib
+      -DGDAL_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include -DGDAL_LIBRARY=$CI_PROJECT_DIR/dist/lib
+      -DGEOS_INCLUDE_DIR=$CI_PROJECT_DIR/dist/include -DGEOS_LIBRARY=$CI_PROJECT_DIR/dist/lib ..
+    - emmake make mapserver -j$(nproc) # build mapserver.a target only
+    - cp libmapserver.a $CI_PROJECT_DIR/dist/lib
+    - cp *.h $CI_PROJECT_DIR/dist/include
+    - cp ../*.h $CI_PROJECT_DIR/dist/include
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+  needs: ["GDAL", "GEOS", "PROJ", "libxml2"]
+
+WASM:
+  stage: build
+  tags:
+    - docker
+  script:
+    - apt-get update && apt-get install -y brotli
+    - emmake make
+  artifacts:
+    paths:
+      - dist/mapserver.*
+      - dist/mapserver-node.js
+    expire_in: 1 hour
+  needs: ["MapServer"]
+
+Jest:
+  image: node:18-alpine
+  stage: test
+  tags:
+    - docker
+  script:
+    - npm ci
+    - npm test -- --ci --reporters=default --reporters=jest-junit --noStackTrace
+  artifacts:
+    paths:
+      - dist/mapserver.*
+    expire_in: 1 hour
+    reports:
+      junit:
+        - junit.xml
+  needs: ["WASM"]
+
+publish:
+  image: node:18
+  stage: release
+  only:
+    - main
+    - beta
+    - alpha
+  variables:
+    GITLAB_TOKEN: $SECRET_GITLAB_TN_ACCESS_TOKEN
+    NPM_CONFIG_REGISTRY: $NEXUS_NB_PROD_URL_REPOSITORY_NPM_RELEASES
+    GITLAB_URL: $CI_SERVER_URL
+    GIT_AUTHOR_NAME: $SECRET_GITLAB_TN_USERNAME
+    GIT_AUTHOR_EMAIL: $SECRET_GITLAB_TN_USERNAME@data-experts.de
+  script:
+    - echo "registry = ${NEXUS_NB_PROD_URL_REPOSITORY_NPM_RELEASES}" >> ~/npmrc
+    - echo "//nexus-nb.data-experts.net:8443/repository/npm-releases/:_auth = ${SECRET_NPM_TOKEN_PUBLISH}" >> ~/.npmrc # legacy login (nexus)
+    - npm ci
+    - npx semantic-release
+  needs: ["Jest"]

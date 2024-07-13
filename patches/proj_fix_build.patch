@@ -1,0 +1,26 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2c2b54d7..500fa6f7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -320,10 +320,8 @@ endif()
+ ################################################################################
+ include_directories(${PROJ_SOURCE_DIR}/src)
+ 
+-add_subdirectory(data)
+ add_subdirectory(include)
+ add_subdirectory(src)
+-add_subdirectory(man)
+ add_subdirectory(cmake)
+ if(BUILD_TESTING)
+   add_subdirectory(test)
+@@ -334,10 +332,6 @@ if(BUILD_EXAMPLES)
+   add_subdirectory(examples)
+ endif()
+ 
+-set(docfiles COPYING NEWS AUTHORS)
+-install(FILES ${docfiles}
+-        DESTINATION ${CMAKE_INSTALL_DOCDIR})
+-
+ ################################################################################
+ # pkg-config support
+ ################################################################################

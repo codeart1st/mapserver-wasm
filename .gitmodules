@@ -1,0 +1,18 @@
+[submodule "sqlite"]
+	path = thirdparty/sqlite
+	url = https://github.com/sqlite/sqlite.git
+[submodule "PROJ"]
+	path = thirdparty/PROJ
+	url = https://github.com/OSGeo/PROJ.git
+[submodule "libxml2"]
+	path = thirdparty/libxml2
+	url = https://github.com/GNOME/libxml2.git
+[submodule "geos"]
+	path = thirdparty/geos
+	url = https://github.com/libgeos/geos.git
+[submodule "gdal"]
+	path = thirdparty/gdal
+	url = https://github.com/OSGeo/gdal.git
+[submodule "mapserver"]
+	path = thirdparty/mapserver
+	url = https://github.com/mapserver/mapserver.git

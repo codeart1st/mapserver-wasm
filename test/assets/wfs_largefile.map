@@ -1,0 +1,36 @@
+MAP
+  DEBUG 5
+  CONFIG "MS_ERRORFILE" "error.log"
+  CONFIG "CPL_LOG" "error.log"
+  CONFIG "CPL_DEBUG" "ON"
+  CONFIG "CPL_LOG_ERRORS" "ON"
+  CONFIG "CPL_TIMESTAMP" "ON"
+  CONFIG "PROJ_LIB" "/proj/"
+
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  WEB
+    METADATA
+      "wfs_onlineresource" "http://localhost?"
+      "wfs_enable_request" "*"
+    END
+  END
+
+  LAYER
+    NAME test
+    TYPE POINT
+    DEBUG 5
+    CONNECTIONTYPE OGR
+    CONNECTION "/ms/garbage.gpkg"
+    DATA "test"
+    METADATA
+      "wfs_use_default_extent_for_getfeature" "OFF"
+      "ows_title" "test"
+      "gml_include_items" "all"
+      "gml_featureid" "id"
+      "gml_types" "auto"
+    END
+  END
+END
