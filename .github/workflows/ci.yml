@@ -266,12 +266,12 @@ jobs:
 
       - name: Start compilation
         run: |
-          cd thirdparty/mapserver
+          cd thirdparty/mapserver/build
           emmake make mapserver -j$(nproc) # build mapserver.a target only
 
       - name: Install artifacts
         run: |
-          cd thirdparty/mapserver
+          cd thirdparty/mapserver/build
           cp libmapserver.a $GITHUB_WORKSPACE/dist/lib
           cp *.h $GITHUB_WORKSPACE/dist/include
           cp ../*.h $GITHUB_WORKSPACE/dist/include
@@ -284,3 +284,64 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           overwrite: true
+
+  WASM:
+    needs: [MapServer]
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: recursive
+
+      - name: Prepare build environemnt
+        uses: ./.github/actions/prepare-build-env
+
+      - name: Restore previous build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: MapServer
+          path: dist/
+
+      - name: Install required tools
+        run: sudo apt-get update && sudo apt-get install -y brotli
+
+      - name: Start compilation
+        run: emmake make
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: WASM
+          path: |
+            dist/mapserver.*
+            dist/mapserver-node.js
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
+  Jest:
+    needs: [WASM]
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: recursive
+
+      - name: Prepare build environemnt
+        uses: ./.github/actions/prepare-build-env
+
+      - name: Restore previous build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: WASM
+          path: dist/
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run jest tests
+        run: npm test -- --ci --reporters=default --reporters=jest-junit --noStackTrace
