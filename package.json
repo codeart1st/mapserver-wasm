@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "description": "WebAssembly version of MapServer with a dispatchRequest interface",
   "author": "Paul Lange <paul.lange@data-experts.de>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "dist/mapserver.js",
   "types": "index.d.ts",
   "scripts": {
