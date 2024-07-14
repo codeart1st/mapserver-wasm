@@ -1,0 +1,50 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+      - beta
+      - alpha
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: ci
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+
+      - name: Prepare build environemnt
+        uses: ./.github/actions/prepare-build-env
+
+      - name: Download wasm-pack build output
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: WASM
+          path: dist/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify npm package signatures
+        run: npm audit signatures
+
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
