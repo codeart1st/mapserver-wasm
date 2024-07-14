@@ -40,7 +40,9 @@ jobs:
             --with-schematron=no --with-schemas=yes
 
       - name: Start compilation
-        run: emmake make install -j$(nproc)
+        run: |
+          cd thirdparty/libxml2
+          emmake make install -j$(nproc)
 
   SQLite:
     timeout-minutes: 10
@@ -73,13 +75,19 @@ jobs:
           ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
 
       - name: Build amalgamation without emscripten
-        run: make sqlite3.c
+        run: |
+          cd thirdparty/sqlite
+          make sqlite3.c
 
       - name: Configure build tools (emscripten)
-        run: emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
+        run: |
+          cd thirdparty/sqlite
+          emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
 
       - name: Start compilation
-        run: emmake make install -j$(nproc)
+        run: |
+          cd thirdparty/sqlite
+          emmake make install -j$(nproc)
 
   GEOS:
     timeout-minutes: 10
@@ -102,7 +110,9 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
-        run: emmake make install -j$(nproc)
+        run: |
+          cd thirdparty/geos/build
+          emmake make install -j$(nproc)
 
   PROJ:
     needs: [SQLite]
@@ -131,7 +141,9 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
-        run: emmake make install -j$(nproc)
+        run: |
+          cd thirdparty/PROJ/build
+          emmake make install -j$(nproc)
 
   GDAL:
     needs: [SQLite, PROJ]
@@ -168,7 +180,9 @@ jobs:
             -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
-        run: emmake make install -j$(nproc)
+        run: |
+          cd thirdparty/gdal/build
+          emmake make install -j$(nproc)
 
   MapServer:
     needs: [GDAL, GEOS, PROJ, libxml2]
@@ -207,10 +221,13 @@ jobs:
             -DGEOS_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGEOS_LIBRARY=$GITHUB_WORKSPACE/dist/lib ..
 
       - name: Start compilation
-        run: emmake make mapserver -j$(nproc) # build mapserver.a target only
+        run: |
+          cd thirdparty/mapserver
+          emmake make mapserver -j$(nproc) # build mapserver.a target only
 
       - name: Install artifacts
         run: |
+          cd thirdparty/mapserver
           cp libmapserver.a $GITHUB_WORKSPACE/dist/lib
           cp *.h $GITHUB_WORKSPACE/dist/include
           cp ../*.h $GITHUB_WORKSPACE/dist/include
