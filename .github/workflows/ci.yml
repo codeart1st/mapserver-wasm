@@ -155,6 +155,7 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           name: SQLite
+          path: dist/
 
       - name: Configure build tools
         run: |
@@ -199,6 +200,8 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           pattern: '{SQLite,PROJ}'
+          path: dist/
+          merge-multiple: true
 
       - name: Trigger port loading
         run: |
@@ -251,6 +254,8 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           pattern: '{GDAL,GEOS,PROJ,libxml2}'
+          path: dist/
+          merge-multiple: true
 
       - name: Trigger port loading
         run: |
