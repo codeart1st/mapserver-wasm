@@ -192,16 +192,14 @@ jobs:
           path: dist/
           merge-multiple: true
 
-      - name: Trigger port loading
+      - name: Configure build tools
         run: |
+          cd thirdparty/gdal
+          # trigger port loading
           EM_DATA=$EMSDK/upstream/emscripten
           EM_CACHE=$EM_DATA/cache
           touch temp.c
           emcc -c -s SUPPORT_LONGJMP=wasm -s USE_ZLIB=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 temp.c
-
-      - name: Configure build tools
-        run: |
-          cd thirdparty/gdal
           git apply ../../patches/gdal_reduce_size.patch
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dist \
@@ -246,16 +244,14 @@ jobs:
           path: dist/
           merge-multiple: true
 
-      - name: Trigger port loading
+      - name: Configure build tools
         run: |
+          cd thirdparty/mapserver
+          # trigger port loading
           EM_DATA=$EMSDK/upstream/emscripten
           EM_CACHE=$EM_DATA/cache
           touch temp.c
           emcc -c -s SUPPORT_LONGJMP=wasm -s USE_ZLIB=1 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 temp.c
-
-      - name: Configure build tools
-        run: |
-          cd thirdparty/mapserver
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DWITH_FRIBIDI=OFF -DWITH_HARFBUZZ=OFF -DWITH_ICONV=OFF -DWITH_CAIRO=OFF -DWITH_FCGI=OFF \
             -DWITH_POSTGIS=OFF -DWITH_WCS=OFF -DWITH_GIF=OFF -DWITH_PROTOBUFC=OFF -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm" \
