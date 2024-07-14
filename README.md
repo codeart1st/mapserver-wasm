@@ -9,7 +9,7 @@
 |**SQLite**|3.45.3|https://www.sqlite.org/|Public Domain|🚧|
 |**Libxml2**|2.12.6|http://xmlsoft.org/|MIT|🚧|
 
-✅ up-to-date | 🚧 needs-update | Last update check 26.04.2024
+✅ up-to-date | 🚧 needs-update | Last update check 14.07.2024
 
 # Checkout
 
