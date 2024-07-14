@@ -2,23 +2,23 @@
 
 |Name|Version|Home page|License|Status|
 |----|-------|---------|-------|-------|
-|**MapServer**|8.0.1|https://mapserver.org/|MIT|✅|
-|**GDAL/OGR**|3.8.5|https://gdal.org/|MIT/X style|✅|
-|**PROJ**|9.4.0|https://proj.org/|MIT/X style|✅|
-|**GEOS**|3.12.1|https://libgeos.org/|LGPL-2.1|✅|
-|**SQLite**|3.45.3|https://www.sqlite.org/|Public Domain|✅|
-|**Libxml2**|2.12.6|http://xmlsoft.org/|MIT|✅|
+|**MapServer**|8.0.1|https://mapserver.org/|MIT|🚧|
+|**GDAL/OGR**|3.8.5|https://gdal.org/|MIT/X style|🚧|
+|**PROJ**|9.4.0|https://proj.org/|MIT/X style|🚧|
+|**GEOS**|3.12.1|https://libgeos.org/|LGPL-2.1|🚧|
+|**SQLite**|3.45.3|https://www.sqlite.org/|Public Domain|🚧|
+|**Libxml2**|2.12.6|http://xmlsoft.org/|MIT|🚧|
 
 ✅ up-to-date | 🚧 needs-update | Last update check 26.04.2024
 
 # Checkout
 
 ```sh
-git clone --recurse-submodules git@git-profil.data-experts.net:profil/gis/mapserver-wasm.git
+git clone --recurse-submodules git@github.com:codeart1st/mapserver-wasm.git
 ```
 
 ```sh
-git clone git@git-profil.data-experts.net:profil/gis/mapserver-wasm.git
+git clone git@github.com:codeart1st/mapserver-wasm.git
 git submodule update --init --recursive
 ```
 
@@ -42,9 +42,9 @@ And execute in a second terminal the following command to install the missing bu
 ```sh
 docker exec --user root mapserver-wasm bash -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tcl automake pkgconf libtool brotli"
 ```
-After that execute all job script commands described in `.gitlab-ci.yml` inside the interactive build container. It can be helpful to set the `CI_PROJECT_DIR` environment variable beforehand. For a better overview, you can also check the [GitLab CI pipeline editor](https://git-profil.data-experts.net/profil/gis/mapserver-wasm/-/ci/editor?branch_name=develop&tab=2).
+After that execute all job script commands described in `.github/workflows/ci.yml` inside the interactive build container. It can be helpful to set the `GITHUB_WORKSPACE` environment variable beforehand.
 ```sh
-CI_PROJECT_DIR=/src
+GITHUB_WORKSPACE=/src
 ```
 
 # Test
