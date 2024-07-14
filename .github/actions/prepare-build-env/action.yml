@@ -1,0 +1,11 @@
+name: Prepare build environment
+description: Ensures that everything is prepared for our build jobs
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install emscripten toolchain
+      shell: bash
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh
