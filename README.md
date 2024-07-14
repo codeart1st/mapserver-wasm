@@ -36,7 +36,7 @@ git pull --recurse-submodules
 
 Start the build container with the following command to ensure the filesystem permissions for newly created files are correct.
 ```sh
-docker run -it --rm -v $(pwd):/src -v /etc/passwd:/etc/passwd --user "$(id -u):$(id -g)" --name mapserver-wasm emscripten/emsdk:3.1.58 bash
+docker run -it --rm -v $(pwd):/src -v /etc/passwd:/etc/passwd --user "$(id -u):$(id -g)" --name mapserver-wasm emscripten/emsdk:3.1.63 bash
 ```
 And execute in a second terminal the following command to install the missing build depedencies as root user.
 ```sh
