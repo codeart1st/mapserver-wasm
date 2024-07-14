@@ -31,12 +31,12 @@ jobs:
           cd thirdparty/libxml2
           # omit the auto included configure step
           NOCONFIGURE=1 ./autogen.sh
-          emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
-            --with-http=no --with-python=no --with-threads=no --with-zlib=no
-            --with-modules=no --with-c14n=no --with-catalog=no --with-debug=no
-            --with-html=no --with-iconv=no --with-iso8859x=no --with-legacy=no
-            --with-push=no --with-reader=no --with-readline=no --with-regexps=no
-            --with-valid=no --with-writer=no --with-xinclude=no --with-lzma=no
+          emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist \
+            --with-http=no --with-python=no --with-threads=no --with-zlib=no \
+            --with-modules=no --with-c14n=no --with-catalog=no --with-debug=no \
+            --with-html=no --with-iconv=no --with-iso8859x=no --with-legacy=no \
+            --with-push=no --with-reader=no --with-readline=no --with-regexps=no \
+            --with-valid=no --with-writer=no --with-xinclude=no --with-lzma=no \
             --with-schematron=no --with-schemas=yes
 
       - name: Start compilation
@@ -64,13 +64,13 @@ jobs:
         run: |
           cd thirdparty/sqlite
           git apply ../../patches/sqlite_fix_build.patch
-          export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE
-            -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS
-            -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS
-            -DSQLITE_OMIT_GENERATED_COLUMNS -DSQLITE_OMIT_HEX_INTEGER -DSQLITE_OMIT_INTEGRITY_CHECK -DSQLITE_OMIT_INTROSPECTION_PRAGMAS
-            -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_REINDEX -DSQLITE_OMIT_TCL_VARIABLE -DSQLITE_OMIT_TRACE
+          export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE \
+            -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS \
+            -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS \
+            -DSQLITE_OMIT_GENERATED_COLUMNS -DSQLITE_OMIT_HEX_INTEGER -DSQLITE_OMIT_INTEGRITY_CHECK -DSQLITE_OMIT_INTROSPECTION_PRAGMAS \
+            -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_REINDEX -DSQLITE_OMIT_TCL_VARIABLE -DSQLITE_OMIT_TRACE \
             -DSQLITE_OMIT_TRUNCATE_OPTIMIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_AUTHORIZATION"
-          export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+          export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
             -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
           ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
 
@@ -106,7 +106,7 @@ jobs:
         run: |
           cd thirdparty/geos
           mkdir -p build && cd build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
@@ -133,11 +133,11 @@ jobs:
           cd thirdparty/PROJ
           git apply ../../patches/proj_fix_build.patch
           mkdir -p build && cd build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
-            -DCMAKE_CXX_FLAGS=-fwasm-exceptions
-            -DBUILD_TESTING=OFF -DSQLITE3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include
-            -DSQLITE3_LIBRARY=$GITHUB_WORKSPACE/dist/libsqlite3.a -DEXE_SQLITE3=$GITHUB_WORKSPACE/dist/bin
-            -DENABLE_TIFF=OFF -DENABLE_CURL=OFF -DBUILD_APPS=OFF -DCMAKE_C_IMPLICIT_LINK_LIBRARIES=" "
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_CXX_FLAGS=-fwasm-exceptions \
+            -DBUILD_TESTING=OFF -DSQLITE3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include \
+            -DSQLITE3_LIBRARY=$GITHUB_WORKSPACE/dist/libsqlite3.a -DEXE_SQLITE3=$GITHUB_WORKSPACE/dist/bin \
+            -DENABLE_TIFF=OFF -DENABLE_CURL=OFF -DBUILD_APPS=OFF -DCMAKE_C_IMPLICIT_LINK_LIBRARIES=" " \
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
@@ -171,12 +171,12 @@ jobs:
           cd thirdparty/gdal
           git apply ../../patches/gdal_reduce_size.patch
           mkdir -p build && cd build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dist
-            -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm"
-            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a
-            -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a
-            -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a
-            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dist \
+            -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm" \
+            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a \
+            -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a \
+            -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a \
+            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF \
             -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
@@ -209,15 +209,15 @@ jobs:
         run: |
           cd thirdparty/mapserver
           mkdir -p build && cd build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DWITH_FRIBIDI=OFF -DWITH_HARFBUZZ=OFF -DWITH_ICONV=OFF -DWITH_CAIRO=OFF -DWITH_FCGI=OFF
-            -DWITH_POSTGIS=OFF -DWITH_WCS=OFF -DWITH_GIF=OFF -DWITH_PROTOBUFC=OFF -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm"
-            -DFREETYPE_INCLUDE_DIR=$EM_CACHE/sysroot/include/freetype2 -DFREETYPE_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
-            -DJPEG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DJPEG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
-            -DPNG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
-            -DZLIB_INCLUDE_DIR=$EM_CACHE/sysroot/include -DZLIB_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten
-            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE$GITHUB_WORKSPACE/dist/lib
-            -DLIBXML2_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include/libxml2 -DLIBXML2_LIBRARY=$GITHUB_WORKSPACE/dist/lib
-            -DGDAL_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGDAL_LIBRARY=$GITHUB_WORKSPACE/dist/lib
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DWITH_FRIBIDI=OFF -DWITH_HARFBUZZ=OFF -DWITH_ICONV=OFF -DWITH_CAIRO=OFF -DWITH_FCGI=OFF \
+            -DWITH_POSTGIS=OFF -DWITH_WCS=OFF -DWITH_GIF=OFF -DWITH_PROTOBUFC=OFF -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm" \
+            -DFREETYPE_INCLUDE_DIR=$EM_CACHE/sysroot/include/freetype2 -DFREETYPE_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
+            -DJPEG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DJPEG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
+            -DPNG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
+            -DZLIB_INCLUDE_DIR=$EM_CACHE/sysroot/include -DZLIB_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
+            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE$GITHUB_WORKSPACE/dist/lib \
+            -DLIBXML2_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include/libxml2 -DLIBXML2_LIBRARY=$GITHUB_WORKSPACE/dist/lib \
+            -DGDAL_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGDAL_LIBRARY=$GITHUB_WORKSPACE/dist/lib \
             -DGEOS_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGEOS_LIBRARY=$GITHUB_WORKSPACE/dist/lib ..
 
       - name: Start compilation
