@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: libxml2
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -100,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: SQLite
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -133,7 +133,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: GEOS
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -177,7 +177,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: PROJ
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -229,7 +229,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: GDAL
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -290,7 +290,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: MapServer
-          path: $GITHUB_WORKSPACE/dist
+          path: dist/
           if-no-files-found: error
           retention-days: 1
           overwrite: true
