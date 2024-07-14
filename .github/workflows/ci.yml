@@ -20,7 +20,6 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
 
       - name: Install required tools
@@ -44,6 +43,15 @@ jobs:
           cd thirdparty/libxml2
           emmake make install -j$(nproc)
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: libxml2
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
   SQLite:
     timeout-minutes: 10
     runs-on: ubuntu-24.04
@@ -54,7 +62,6 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
 
       - name: Install required tools
@@ -89,6 +96,15 @@ jobs:
           cd thirdparty/sqlite
           emmake make install -j$(nproc)
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: SQLite
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
   GEOS:
     timeout-minutes: 10
     runs-on: ubuntu-24.04
@@ -99,7 +115,6 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
 
       - name: Configure build tools
@@ -114,6 +129,15 @@ jobs:
           cd thirdparty/geos/build
           emmake make install -j$(nproc)
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: GEOS
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
   PROJ:
     needs: [SQLite]
     timeout-minutes: 10
@@ -125,8 +149,12 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
+
+      - name: Restore previous build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: SQLite
 
       - name: Configure build tools
         run: |
@@ -145,6 +173,15 @@ jobs:
           cd thirdparty/PROJ/build
           emmake make install -j$(nproc)
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: PROJ
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
   GDAL:
     needs: [SQLite, PROJ]
     timeout-minutes: 10
@@ -156,8 +193,12 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
+
+      - name: Restore previous build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          pattern: '{SQLite,PROJ}'
 
       - name: Trigger port loading
         run: |
@@ -184,6 +225,15 @@ jobs:
           cd thirdparty/gdal/build
           emmake make install -j$(nproc)
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: GDAL
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
   MapServer:
     needs: [GDAL, GEOS, PROJ, libxml2]
     timeout-minutes: 10
@@ -195,8 +245,12 @@ jobs:
           submodules: recursive
 
       - name: Prepare build environemnt
-        id: prepare
         uses: ./.github/actions/prepare-build-env
+
+      - name: Restore previous build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          pattern: '{GDAL,GEOS,PROJ,libxml2}'
 
       - name: Trigger port loading
         run: |
@@ -231,3 +285,12 @@ jobs:
           cp libmapserver.a $GITHUB_WORKSPACE/dist/lib
           cp *.h $GITHUB_WORKSPACE/dist/include
           cp ../*.h $GITHUB_WORKSPACE/dist/include
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: MapServer
+          path: $GITHUB_WORKSPACE/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true

@@ -12,5 +12,7 @@ runs:
         ./emsdk install 3.1.58
         ./emsdk activate 3.1.58
         source ./emsdk_env.sh
-        # Export environment variables to a file
-        env > $GITHUB_ENV
+        # Export emsdk environment variables
+        echo $PATH >> $GITHUB_ENV
+        echo $EMSDK >> $GITHUB_ENV
+        echo $EMSDK_NODE >> $GITHUB_ENV
