@@ -24,12 +24,12 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Install required tools
-        run: apt-get update && apt-get install -y automake pkgconf libtool
+        run: sudo apt-get update && sudo apt-get install -y automake pkgconf libtool
 
       - name: Configure build tools
-        # omit the auto included configure step
         run: |
           cd thirdparty/libxml2
+          # omit the auto included configure step
           NOCONFIGURE=1 ./autogen.sh
           emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
             --with-http=no --with-python=no --with-threads=no --with-zlib=no
@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Install required tools
-        run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tcl
+        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y tcl
 
       - name: Configure build tools
         run: |
