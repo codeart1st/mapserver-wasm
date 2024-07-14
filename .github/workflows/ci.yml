@@ -67,7 +67,7 @@ jobs:
       - name: Install required tools
         run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y tcl
 
-      - name: Configure build tools
+      - name: Configure build tools and compile
         run: |
           cd thirdparty/sqlite
           git apply ../../patches/sqlite_fix_build.patch
@@ -80,20 +80,9 @@ jobs:
           export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
             -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
           ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
-
-      - name: Build amalgamation without emscripten
-        run: |
-          cd thirdparty/sqlite
+          # build amalgamation without emscripten
           make sqlite3.c
-
-      - name: Configure build tools (emscripten)
-        run: |
-          cd thirdparty/sqlite
           emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
-
-      - name: Start compilation
-        run: |
-          cd thirdparty/sqlite
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
