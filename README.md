@@ -1,3 +1,27 @@
+# mapserver-wasm
+
+<div align="center">
+  <strong>MapServer WFS and WMS inside Web Worker</strong>
+</div>
+<div align="center">
+  Build environment to compile MapServer with Emscripten to a WebAssembly package
+</div>
+<br>
+<div align="center">
+  <a href="https://github.com/codeart1st/mapserver-wasm/actions/workflows/ci.yml">
+    <img src="https://github.com/codeart1st/mapserver-wasm/actions/workflows/ci.yml/badge.svg" alt="Build status"/>
+  </a>
+  <a href="https://github.com/codeart1st/mapserver-wasm/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/codeart1st/mapserver-wasm" alt="MIT license"/>
+  </a>
+</div>
+
+## Features
+
+- Use MapServer inside your Browser
+- Expose WFS and WMS services
+- Read vector and raster data from GeoPackage
+
 # ThirdParty Dependencies
 
 |Name|Version|Home page|License|Status|
@@ -6,7 +30,7 @@
 |**GDAL/OGR**|3.8.5|https://gdal.org/|MIT/X style|🚧|
 |**PROJ**|9.4.0|https://proj.org/|MIT/X style|🚧|
 |**GEOS**|3.12.1|https://libgeos.org/|LGPL-2.1|🚧|
-|**SQLite**|3.45.3|https://www.sqlite.org/|Public Domain|🚧|
+|**SQLite**|3.46.0|https://www.sqlite.org/|Public Domain|✅|
 |**Libxml2**|2.13.2|http://xmlsoft.org/|MIT|✅|
 
 ✅ up-to-date | 🚧 needs-update | Last update check 15.07.2024
