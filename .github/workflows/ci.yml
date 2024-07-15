@@ -280,7 +280,7 @@ jobs:
           cd thirdparty/mapserver/build
           cp libmapserver.a $GITHUB_WORKSPACE/dist/lib
           cp *.h $GITHUB_WORKSPACE/dist/include
-          cp ../*.h $GITHUB_WORKSPACE/dist/include
+          cp ../src/*.h $GITHUB_WORKSPACE/dist/include
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4.3.4
