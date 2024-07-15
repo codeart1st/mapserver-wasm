@@ -28,7 +28,7 @@
 |----|-------|---------|-------|-------|
 |**MapServer**|8.0.1|https://mapserver.org/|MIT|🚧|
 |**GDAL/OGR**|3.8.5|https://gdal.org/|MIT/X style|🚧|
-|**PROJ**|9.4.0|https://proj.org/|MIT/X style|🚧|
+|**PROJ**|9.4.1|https://proj.org/|MIT/X style|✅|
 |**GEOS**|3.12.2|https://libgeos.org/|LGPL-2.1|✅|
 |**SQLite**|3.46.0|https://www.sqlite.org/|Public Domain|✅|
 |**Libxml2**|2.13.2|http://xmlsoft.org/|MIT|✅|
