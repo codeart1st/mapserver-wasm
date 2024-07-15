@@ -1,6 +1,6 @@
 {
   "name": "mapserver-wasm",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "description": "WebAssembly version of MapServer with a dispatchRequest interface",
   "author": "Paul Lange <paul.lange@data-experts.de>",
   "license": "MIT",
