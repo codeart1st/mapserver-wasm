@@ -1,8 +1,8 @@
 diff --git a/alg/CMakeLists.txt b/alg/CMakeLists.txt
-index 2e6810f95b..b5601e4bac 100644
+index fe008aa606..8b3d3bf159 100644
 --- a/alg/CMakeLists.txt
 +++ b/alg/CMakeLists.txt
-@@ -50,7 +50,7 @@ target_compile_options(alg PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${GDAL_CXX_WARNING_
+@@ -51,7 +51,7 @@ target_compile_options(alg PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${GDAL_CXX_WARNING_
  target_compile_options(alg PRIVATE $<$<COMPILE_LANGUAGE:C>:${GDAL_C_WARNING_FLAGS}>)
  
  target_include_directories(
@@ -12,14 +12,14 @@ index 2e6810f95b..b5601e4bac 100644
  set_property(TARGET alg PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  target_sources(${GDAL_LIB_TARGET_NAME} PRIVATE $<TARGET_OBJECTS:alg>)
 diff --git a/cmake/helpers/CheckDependentLibraries.cmake b/cmake/helpers/CheckDependentLibraries.cmake
-index f5c920af9d..821e4caa26 100644
+index 6f9ee274bf..af103ffec7 100644
 --- a/cmake/helpers/CheckDependentLibraries.cmake
 +++ b/cmake/helpers/CheckDependentLibraries.cmake
-@@ -379,14 +379,6 @@ else()
-   string(APPEND GDAL_IMPORT_DEPENDENCIES "find_dependency(PROJ 6.0)\n")
- endif ()
+@@ -409,14 +409,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
+     message(FATAL_ERROR "PROJ >= 6.3 required. Version ${PROJ_VERSION} found")
+ endif()
  
--gdal_check_package(TIFF "Support for the Tag Image File Format (TIFF)." VERSION 4.0 CAN_DISABLE)
+-gdal_check_package(TIFF "Support for the Tag Image File Format (TIFF)." VERSION 4.1 CAN_DISABLE)
 -set_package_properties(
 -  TIFF PROPERTIES
 -  URL "https://libtiff.gitlab.io/libtiff/"
@@ -30,7 +30,7 @@ index f5c920af9d..821e4caa26 100644
  if (DEFINED ENV{CONDA_PREFIX} AND UNIX)
      # Currently on Unix, the Zstd cmake config file is buggy. It declares a
      # libzstd_static target but the corresponding libzstd.a file is missing,
-@@ -400,12 +392,6 @@ gdal_check_package(ZSTD "ZSTD compression library" CAN_DISABLE ${ZSTD_NAMES_AND_
+@@ -430,11 +422,6 @@ gdal_check_package(ZSTD "ZSTD compression library" CAN_DISABLE ${ZSTD_NAMES_AND_
  gdal_check_package(SFCGAL "gdal core supports ISO 19107:2013 and OGC Simple Features Access 1.2 for 3D operations"
                     CAN_DISABLE)
  
@@ -39,15 +39,14 @@ index f5c920af9d..821e4caa26 100644
 -  TARGETS geotiff_library GEOTIFF::GEOTIFF
 -)
 -gdal_internal_library(GEOTIFF REQUIRED)
--
- gdal_check_package(PNG "PNG compression library (external)" CAN_DISABLE RECOMMENDED)
- gdal_internal_library(PNG)
  
+ gdal_check_package(PNG "PNG compression library (external)" CAN_DISABLE RECOMMENDED VERSION "1.6")
+ gdal_internal_library(PNG)
 diff --git a/frmts/CMakeLists.txt b/frmts/CMakeLists.txt
-index 01265cdd8a..90c6b65b49 100644
+index fc9787f958..87df879313 100644
 --- a/frmts/CMakeLists.txt
 +++ b/frmts/CMakeLists.txt
-@@ -8,10 +8,7 @@ include(CMakeDependentOption)
+@@ -34,10 +34,7 @@ include(CMakeDependentOption)
  gdal_dependent_format(jpeg "JPEG image format" "GDAL_USE_JPEG OR GDAL_USE_JPEG_INTERNAL")
  
  # base driver provide frmt core functions
@@ -58,7 +57,7 @@ index 01265cdd8a..90c6b65b49 100644
  gdal_format(mem "Read/write data in Memory")
  gdal_format(vrt "Virtual GDAL Datasets")
  # Note: derived is derived of vrt
-@@ -23,126 +20,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
+@@ -49,125 +46,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
    gdal_optional_format(null "NULL dummy driver")
  endif ()
  
@@ -125,7 +124,6 @@ index 01265cdd8a..90c6b65b49 100644
 -# optional Formats
 -gdal_optional_format(bsb "Maptech/NOAA BSB Nautical Chart Format")
 -gdal_dependent_format(aigrid "Arc/Info Binary Grid Format" "OGR_ENABLE_DRIVER_AVC")
--gdal_optional_format(arg "ARG: Azavea Raster Grid")
 -gdal_optional_format(usgsdem "USGS ASCII DEM (and CDED)")
 -gdal_optional_format(airsar "AirSAR Polarimetric Format")
 -gdal_optional_format(ozi "OZF2/OZFX3 raster")
@@ -186,10 +184,10 @@ index 01265cdd8a..90c6b65b49 100644
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index 5de011eb63..4b76fc686f 100644
+index f8258bbdec..4981effb38 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
-@@ -58,7 +58,7 @@ target_compile_options(gcore PRIVATE ${GDAL_CXX_WARNING_FLAGS} ${WFLAG_OLD_STYLE
+@@ -68,7 +68,7 @@ target_compile_options(gcore PRIVATE ${GDAL_CXX_WARNING_FLAGS} ${WFLAG_OLD_STYLE
  target_include_directories(
    gcore
    PRIVATE $<TARGET_PROPERTY:ogrsf_generic,SOURCE_DIR> $<TARGET_PROPERTY:ogr_geojson,SOURCE_DIR>
@@ -199,7 +197,7 @@ index 5de011eb63..4b76fc686f 100644
  set_property(TARGET gcore PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  
 diff --git a/gcore/gdaljp2metadata.cpp b/gcore/gdaljp2metadata.cpp
-index 9d2751e676..1a3b9475d0 100644
+index 139c6940c2..b50c537b41 100644
 --- a/gcore/gdaljp2metadata.cpp
 +++ b/gcore/gdaljp2metadata.cpp
 @@ -52,7 +52,6 @@
@@ -337,7 +335,7 @@ index 9d2751e676..1a3b9475d0 100644
  /************************************************************************/
  /*                             ParseMSIG()                              */
  /************************************************************************/
-@@ -1218,40 +1097,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
+@@ -1218,65 +1097,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
      papszRPCMD = CSLDuplicate(papszRPCMDIn);
  }
  
@@ -375,14 +373,39 @@ index 9d2751e676..1a3b9475d0 100644
 -    return poBox;
 -}
 -
+-/************************************************************************/
+-/*                          IsSRSCompatible()                           */
+-/************************************************************************/
+-
+-/* Returns true if the SRS can be references through a EPSG code, or encoded
+- * as a GML SRS
+- */
+-bool GDALJP2Metadata::IsSRSCompatible(const OGRSpatialReference *poSRS)
+-{
+-    const char *pszAuthName = poSRS->GetAuthorityName(nullptr);
+-    const char *pszAuthCode = poSRS->GetAuthorityCode(nullptr);
+-
+-    if (pszAuthName && pszAuthCode && EQUAL(pszAuthName, "epsg"))
+-    {
+-        if (atoi(pszAuthCode))
+-            return true;
+-    }
+-
+-    CPLErrorStateBackuper oErrorStateBackuper(CPLQuietErrorHandler);
+-    char *pszGMLDef = nullptr;
+-    const bool bRet = (poSRS->exportToXML(&pszGMLDef, nullptr) == OGRERR_NONE);
+-    CPLFree(pszGMLDef);
+-    return bRet;
+-}
+-
  /************************************************************************/
  /*                     GetGMLJP2GeoreferencingInfo()                    */
  /************************************************************************/
 diff --git a/gdal.cmake b/gdal.cmake
-index 7921873d3d..3a8e859548 100644
+index 54cfbe13af..c7ca3338a4 100644
 --- a/gdal.cmake
 +++ b/gdal.cmake
-@@ -555,8 +555,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
+@@ -548,8 +548,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
  endif()
  
  # We need to forward declare a few OGR drivers because raster formats need them
@@ -392,10 +415,10 @@ index 7921873d3d..3a8e859548 100644
                         "GDAL_USE_SQLITE3" OFF)
  cmake_dependent_option(OGR_ENABLE_DRIVER_GPKG "Set ON to build OGR GPKG driver" ${OGR_BUILD_OPTIONAL_DRIVERS}
 diff --git a/ogr/ogrsf_frmts/CMakeLists.txt b/ogr/ogrsf_frmts/CMakeLists.txt
-index ec61b85a15..7819c19ae6 100644
+index f11285935d..7819c19ae6 100644
 --- a/ogr/ogrsf_frmts/CMakeLists.txt
 +++ b/ogr/ogrsf_frmts/CMakeLists.txt
-@@ -13,102 +13,11 @@ add_dependencies(ogrsf_frmts generate_gdal_version_h)
+@@ -13,105 +13,11 @@ add_dependencies(ogrsf_frmts generate_gdal_version_h)
  # Obligatory for building GDAL; always compile in.
  ogr_default_driver(mem "Read/write driver for MEMORY virtual files")
  ogr_default_driver(geojson "GeoJSON/ESRIJSON/TopoJSON driver")
@@ -433,6 +456,9 @@ index ec61b85a15..7819c19ae6 100644
 -ogr_optional_driver(flatgeobuf FlatGeobuf)
 -ogr_optional_driver(mapml MapML)
 -ogr_optional_driver(jsonfg JSONFG)
+-if( NOT WORDS_BIGENDIAN )
+-    ogr_optional_driver(miramon "MiraMonVector")
+-endif()
 -
 -# ######################################################################################################################
 -#
