@@ -1,5 +1,5 @@
-const { loadMapServer, initMapServer, getDocumentFromResponse, createLargeFileSqliteDbFromExisting, printMapServerLog } = require('./utils')
-const fs = require('fs')
+import { loadMapServer, initMapServer, getDocumentFromResponse, createLargeFileSqliteDbFromExisting, printMapServerLog } from './utils'
+import fs from 'fs'
 
 const basePath = './test/assets/'
 

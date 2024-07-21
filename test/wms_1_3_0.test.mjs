@@ -1,5 +1,5 @@
-const { loadMapServer, initMapServer, getDataFromResByteBuffer, printMapServerLog } = require('./utils')
-const { toMatchFile } = require('jest-file-snapshot')
+import { loadMapServer, initMapServer, getDataFromResByteBuffer, printMapServerLog } from './utils'
+import { toMatchFile } from 'jest-file-snapshot'
 
 expect.extend({ toMatchFile })
 

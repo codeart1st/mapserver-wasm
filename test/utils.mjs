@@ -1,15 +1,18 @@
-const { enableFetchMocks } = require('jest-fetch-mock')
-const { readFileSync, copyFileSync, statSync } = require('fs')
-const { dirname, join } = require('path')
-const sqlite3 = require('sqlite3')
+import createFetchMock from 'vitest-fetch-mock'
+import { readFileSync, copyFileSync, statSync } from 'fs'
+import { dirname, join } from 'path'
+import sqlite3 from 'sqlite3'
+import { vi } from 'vitest'
+
+const fetchMocker = createFetchMock(vi)
+fetchMocker.enableMocks()
 
 const CHUNK_SIZE = 25 * 1024 * 1024 // 25 MiB
 
 self.fs = require('fs') // bring into scope for emscripten NODEFS
 
 const loadMapServer = async () => {
-  enableFetchMocks()
-  jest.spyOn(global.console, 'warn').mockImplementation()
+  vi.spyOn(global.console, 'warn').mockImplementation()
 
   fetch.mockResponse(async req => {
     if (!req.url.endsWith('mapserver-node.wasm')) {
@@ -18,7 +21,7 @@ const loadMapServer = async () => {
     return { status: 200, body: readFileSync('./dist/mapserver.wasm') }
   })
 
-  return await require('../dist/mapserver-node.js')()
+  return (await import('../dist/mapserver-node.js')).default()
 }
 
 const initMapServer = ({ FS, cwrap }, { mapFileName }) => {
