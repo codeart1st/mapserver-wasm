@@ -6,7 +6,9 @@ initMap()
 const worker = {}
 
 const initWorker = layer => new Promise(resolve => {
-  const worker = new Worker('/web-worker.js')
+  const worker = new Worker(new URL('./web-worker/index.js', import.meta.url), {
+    type: 'module'
+  })
   worker.onmessage = () => resolve(worker)
   worker.postMessage({ type: 'init', payload: { ...layer } })
 })
