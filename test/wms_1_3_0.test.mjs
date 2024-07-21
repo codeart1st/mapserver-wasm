@@ -1,4 +1,7 @@
 import { loadMapServer, initMapServer, getDataFromResByteBuffer, printMapServerLog } from './utils'
+import { toMatchFile } from 'jest-file-snapshot'
+
+expect.extend({ toMatchFile })
 
 let mapserver
 
@@ -47,7 +50,7 @@ describe('WMS 1.3.0', () => {
     const resByteBuffer = dispatchRequestBytes('GET', searchParams.toString())
     const body = getDataFromResByteBuffer(mapserver, resByteBuffer)
 
-    expect(body).toMatchFileSnapshot()
+    expect(body).toMatchFile()
   })
 
   test('GetMap request should be return a png image', () => {
@@ -67,7 +70,7 @@ describe('WMS 1.3.0', () => {
     const resByteBuffer = dispatchRequestBytes('GET', searchParams.toString())
     const body = getDataFromResByteBuffer(mapserver, resByteBuffer)
 
-    expect(body).toMatchFileSnapshot()
+    expect(body).toMatchFile()
   })
 
   test('GetMap request should transform to different srs', () => {
@@ -87,7 +90,7 @@ describe('WMS 1.3.0', () => {
     const resByteBuffer = dispatchRequestBytes('GET', searchParams.toString())
     const body = getDataFromResByteBuffer(mapserver, resByteBuffer)
 
-    expect(body).toMatchFileSnapshot()
+    expect(body).toMatchFile()
   })
 
   test('GetMap request should print exception to image output', () => {
@@ -108,6 +111,6 @@ describe('WMS 1.3.0', () => {
     const resByteBuffer = dispatchRequestBytes('GET', searchParams.toString())
     const body = getDataFromResByteBuffer(mapserver, resByteBuffer)
 
-    expect(body).toMatchFileSnapshot()
+    expect(body).toMatchFile()
   })
 })

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`WFS 2.0.0 DescribeFeatureType request should be valid 1`] = `
+exports[`WFS 2.0.0 > DescribeFeatureType request should be valid 1`] = `
 "Content-Type: application/gml+xml; version=3.2; charset=UTF-8
 
 <?xml version='1.0' encoding="UTF-8" ?>
@@ -35,7 +35,7 @@ exports[`WFS 2.0.0 DescribeFeatureType request should be valid 1`] = `
 "
 `;
 
-exports[`WFS 2.0.0 GetCapabilities request should be valid 1`] = `
+exports[`WFS 2.0.0 > GetCapabilities request should be valid 1`] = `
 "Content-Type: text/xml; charset=UTF-8
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -404,7 +404,7 @@ exports[`WFS 2.0.0 GetCapabilities request should be valid 1`] = `
 "
 `;
 
-exports[`WFS 2.0.0 GetFeature request with unknown feature typename should return a valid ExceptionReport 1`] = `
+exports[`WFS 2.0.0 > GetFeature request with unknown feature typename should return a valid ExceptionReport 1`] = `
 "Status: 400 Bad request
 Content-Type: text/xml; charset=UTF-8
 
