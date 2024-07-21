@@ -327,7 +327,7 @@ jobs:
           retention-days: 1
           overwrite: true
 
-  Jest:
+  Vitest:
     needs: [WASM]
     timeout-minutes: 10
     runs-on: ubuntu-24.04

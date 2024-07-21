@@ -21,7 +21,7 @@ const loadMapServer = async () => {
     return { status: 200, body: readFileSync('./dist/mapserver.wasm') }
   })
 
-  return await import('../dist/mapserver-node.js')()
+  return (await import('../dist/mapserver-node.js')).default()
 }
 
 const initMapServer = ({ FS, cwrap }, { mapFileName }) => {
