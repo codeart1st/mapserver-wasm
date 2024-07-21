@@ -7,7 +7,7 @@
   "main": "dist/mapserver.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jest"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -31,17 +31,15 @@
     "node": ">=17"
   },
   "dependencies": {
-    "@types/emscripten": "1.39.13"
+    "@types/emscripten": "^1.39.13"
   },
   "devDependencies": {
     "@semantic-release/git": "10.0.1",
     "@semantic-release/github": "10.1.0",
     "jest": "29.7.0",
-    "jest-environment-jsdom": "29.7.0",
-    "jest-fetch-mock": "3.0.3",
-    "jest-file-snapshot": "0.7.0",
-    "jest-junit": "16.0.0",
     "semantic-release": "24.0.0",
-    "sqlite3": "5.1.7"
+    "sqlite3": "5.1.7",
+    "vitest": "2.0.3",
+    "vitest-fetch-mock": "0.3.0"
   }
 }

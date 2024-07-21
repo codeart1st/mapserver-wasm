@@ -350,4 +350,4 @@ jobs:
         run: npm ci
 
       - name: Run jest tests
-        run: npm test -- --ci --reporters=default --reporters=jest-junit --noStackTrace
+        run: npm test
