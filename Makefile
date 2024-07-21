@@ -1,6 +1,6 @@
 RM=rm -f
 CFLAGS=-I./dist/include -I./dist/include/libxml2
-LDFLAGS=-O2 -fwasm-exceptions -s USE_ZLIB=1 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 -s ENVIRONMENT='worker' -s MODULARIZE=1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXPORTED_RUNTIME_METHODS=["cwrap", "FS"]' -s ERROR_ON_UNDEFINED_SYMBOLS=0
+LDFLAGS=-O2 -fwasm-exceptions -s USE_ZLIB=1 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_LIBJPEG=1 -s ENVIRONMENT='worker' -s EXPORT_ES6=1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXPORTED_RUNTIME_METHODS=["cwrap", "FS"]' -s ERROR_ON_UNDEFINED_SYMBOLS=0
 LDLIBS=-lmapserver -lxml2 -lproj -lgdal -lsqlite3 -lgeos -lgeos_c -L./dist/lib
 
 SRCS=src/bindings.c
