@@ -120,7 +120,7 @@ GITHUB_WORKSPACE=/src
 
 ## Test
 
-Tests will be executed with [Jest](https://jestjs.io/) framework. Test execution needs compilation of mapserver-wasm first.
+Tests will be executed with [Vitest](https://vitest.dev/) framework. Test execution needs compilation of mapserver-wasm first.
 ```sh
 npm ci && npm test
 ```
