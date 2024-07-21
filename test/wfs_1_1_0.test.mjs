@@ -1,4 +1,4 @@
-const { loadMapServer, initMapServer, getDocumentFromResponse, printMapServerLog } = require('./utils')
+import { loadMapServer, initMapServer, getDocumentFromResponse, printMapServerLog } from './utils'
 
 let mapserver
 
