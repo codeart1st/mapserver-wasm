@@ -6,6 +6,7 @@ export default defineConfig({
   test: {
     testTimeout: 90 * SECONDS,
     environment: 'jsdom',
-    globals: true
+    globals: true,
+    include: ['test/**/*.test.mjs'],
   }
 })
