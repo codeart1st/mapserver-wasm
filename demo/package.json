@@ -10,7 +10,7 @@
   "dependencies": {
     "dexie": "4.0.8",
     "mapserver-wasm": "file:../",
-    "ol": "9.2.4",
+    "ol": "10.0.0",
     "proj4": "2.11.0"
   },
   "devDependencies": {
