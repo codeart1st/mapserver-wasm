@@ -26,14 +26,14 @@
 
 |Name|Version|Home page|License|Status|
 |----|-------|---------|-------|-------|
-|**MapServer**|8.2.0|https://mapserver.org/|MIT|✅|
-|**GDAL/OGR**|3.9.1|https://gdal.org/|MIT/X style|✅|
+|**MapServer**|8.2.1|https://mapserver.org/|MIT|✅|
+|**GDAL/OGR**|3.9.1|https://gdal.org/|MIT/X style|🚧|
 |**PROJ**|9.4.1|https://proj.org/|MIT/X style|✅|
 |**GEOS**|3.12.2|https://libgeos.org/|LGPL-2.1|✅|
-|**SQLite**|3.46.0|https://www.sqlite.org/|Public Domain|✅|
-|**Libxml2**|2.13.2|http://xmlsoft.org/|MIT|✅|
+|**SQLite**|3.46.0|https://www.sqlite.org/|Public Domain|🚧|
+|**Libxml2**|2.13.3|http://xmlsoft.org/|MIT|✅|
 
-✅ up-to-date | 🚧 needs-update | Last update check 15.07.2024
+✅ up-to-date | 🚧 needs-update | Last update check 29.08.2024
 
 # Getting started
 
