@@ -10,10 +10,10 @@
   "dependencies": {
     "dexie": "4.0.8",
     "mapserver-wasm": "file:../",
-    "ol": "10.1.0",
-    "proj4": "2.12.0"
+    "ol": "10.2.0",
+    "proj4": "2.12.1"
   },
   "devDependencies": {
-    "vite": "5.4.6"
+    "vite": "5.4.7"
   }
 }

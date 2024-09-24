@@ -36,11 +36,11 @@
   },
   "devDependencies": {
     "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "10.1.7",
+    "@semantic-release/github": "10.3.5",
     "jest-file-snapshot": "0.7.0",
-    "semantic-release": "24.1.0",
+    "semantic-release": "24.1.1",
     "sqlite3": "5.1.7",
-    "vitest": "2.0.5",
+    "vitest": "2.1.1",
     "vitest-fetch-mock": "0.3.0"
   }
 }
