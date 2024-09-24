@@ -29,7 +29,7 @@
 |**MapServer**|8.2.2|https://mapserver.org/|MIT|✅|
 |**GDAL/OGR**|3.9.2|https://gdal.org/|MIT/X style|✅|
 |**PROJ**|9.4.1|https://proj.org/|MIT/X style|🚧|
-|**GEOS**|3.12.2|https://libgeos.org/|LGPL-2.1|🚧|
+|**GEOS**|3.13.0|https://libgeos.org/|LGPL-2.1|✅|
 |**SQLite**|3.46.1|https://www.sqlite.org/|Public Domain|✅|
 |**Libxml2**|2.13.4|http://xmlsoft.org/|MIT|✅|
 
