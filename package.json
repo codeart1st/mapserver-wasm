@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "10.3.5",
+    "@semantic-release/github": "11.0.0",
     "jest-file-snapshot": "0.7.0",
     "semantic-release": "24.1.1",
     "sqlite3": "5.1.7",
