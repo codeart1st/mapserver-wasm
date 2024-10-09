@@ -50,7 +50,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: libxml2
           path: dist/
@@ -92,7 +92,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: SQLite
           path: dist/
@@ -125,7 +125,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: GEOS
           path: dist/
@@ -170,7 +170,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: PROJ
           path: dist/
@@ -222,7 +222,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: GDAL
           path: dist/
@@ -283,7 +283,7 @@ jobs:
           cp ../src/*.h $GITHUB_WORKSPACE/dist/include
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: MapServer
           path: dist/
@@ -317,7 +317,7 @@ jobs:
         run: emmake make
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.1
+        uses: actions/upload-artifact@v4.4.2
         with:
           name: WASM
           path: |
