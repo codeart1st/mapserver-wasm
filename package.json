@@ -41,6 +41,6 @@
     "semantic-release": "24.2.0",
     "sqlite3": "5.1.7",
     "vitest": "2.1.8",
-    "vitest-fetch-mock": "0.4.2"
+    "vitest-fetch-mock": "0.4.3"
   }
 }
