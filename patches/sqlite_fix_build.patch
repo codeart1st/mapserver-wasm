@@ -1,13 +1,25 @@
-diff --git a/Makefile.in b/Makefile.in
-index 5b17c0e426..095c43b83d 100644
---- a/Makefile.in
-+++ b/Makefile.in
-@@ -281,7 +281,7 @@ sqlite_cfg.h: $(AS_AUTO_DEF)
- # build requires GNU make.
+diff --git a/main.mk b/main.mk
+index a0b08e5773..1b7620e303 100644
+--- a/main.mk
++++ b/main.mk
+@@ -1994,9 +1994,9 @@ xbin: threadtest5
+ # runtime performance hit, which is fine for use in the shell but is
+ # not appropriate for the canonical library build.
  #
- EMCC_WRAPPER = @EMCC_WRAPPER@
--fiddle: sqlite3.c shell.c
-+fiddle: sqlite3.c
- 	@if [ x = "x$(EMCC_WRAPPER)" ]; then \
- 		echo "Emscripten SDK not found by configure. Cannot build fiddle." 1&>2; \
- 		exit 1; \
+-sqlite3$(T.exe):	shell.c sqlite3.c
++sqlite3$(T.exe):	sqlite3.c
+ 	$(T.link) -o $@ \
+-		shell.c sqlite3.c \
++		sqlite3.c \
+ 		$(CFLAGS.readline) $(SHELL_OPT) $(CFLAGS.icu) \
+ 		$(LDFLAGS.libsqlite3) $(LDFLAGS.readline)
+ #
+@@ -2352,7 +2352,7 @@ distclean:	distclean-. clean
+ 
+ 
+ # Show important variable settings.
+-show-variables:	
++show-variables:
+ 	@echo "CC          = $(CC)"
+ 	@echo "B.cc        = $(B.cc)"
+ 	@echo "T.cc        = $(T.cc)"
