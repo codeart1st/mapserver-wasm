@@ -1,13 +1,13 @@
 diff --git a/Makefile.in b/Makefile.in
-index e5d30d030..72476c153 100644
+index 8ffc77750d..f4697e1056 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -655,9 +655,9 @@ libtclsqlite3.la:	tclsqlite.lo libsqlite3.la
+@@ -560,9 +560,9 @@ libtclsqlite3.la:	tclsqlite.lo libsqlite3.la
  		-version-info "8:6:8" \
  		-avoid-version
 
 -sqlite3$(TEXE):	shell.c sqlite3.c
-+sqlite3$(TEXE): sqlite3.c
++sqlite3$(TEXE):	sqlite3.c
  	$(LTLINK) $(READLINE_FLAGS) $(SHELL_OPT) -o $@ \
 -		shell.c sqlite3.c \
 +		sqlite3.c \
