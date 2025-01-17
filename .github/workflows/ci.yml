@@ -76,7 +76,6 @@ jobs:
       - name: Configure build tools and compile
         run: |
           cd thirdparty/sqlite
-          git apply ../../patches/sqlite_fix_build.patch
           export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE \
             -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS \
             -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS \
@@ -155,6 +154,7 @@ jobs:
       - name: Configure build tools
         run: |
           cd thirdparty/PROJ
+          git apply ../../patches/proj_fix_build.patch
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_CXX_FLAGS=-fwasm-exceptions \
