@@ -30,10 +30,10 @@
 |**GDAL/OGR**|3.9.2|https://gdal.org/|MIT/X style|🚧|
 |**PROJ**|9.5.1|https://proj.org/|MIT/X style|✅|
 |**GEOS**|3.13.0|https://libgeos.org/|LGPL-2.1|✅|
-|**SQLite**|3.46.1|https://www.sqlite.org/|Public Domain|🚧|
+|**SQLite**|3.48.0|https://www.sqlite.org/|Public Domain|✅|
 |**Libxml2**|2.13.5|http://xmlsoft.org/|MIT|✅|
 
-✅ up-to-date | 🚧 needs-update | Last update check 24.09.2024
+✅ up-to-date | 🚧 needs-update | Last update check 17.01.2025
 
 # Getting started
 
