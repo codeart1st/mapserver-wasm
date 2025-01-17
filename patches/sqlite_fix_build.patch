@@ -1,0 +1,13 @@
+diff --git a/Makefile.in b/Makefile.in
+index 5b17c0e426..095c43b83d 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -281,7 +281,7 @@ sqlite_cfg.h: $(AS_AUTO_DEF)
+ # build requires GNU make.
+ #
+ EMCC_WRAPPER = @EMCC_WRAPPER@
+-fiddle: sqlite3.c shell.c
++fiddle: sqlite3.c
+ 	@if [ x = "x$(EMCC_WRAPPER)" ]; then \
+ 		echo "Emscripten SDK not found by configure. Cannot build fiddle." 1&>2; \
+ 		exit 1; \

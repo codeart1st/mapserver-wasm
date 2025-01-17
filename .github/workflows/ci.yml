@@ -76,6 +76,7 @@ jobs:
       - name: Configure build tools and compile
         run: |
           cd thirdparty/sqlite
+          git apply ../../patches/sqlite_fix_build.patch
           export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE \
             -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS \
             -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS \
