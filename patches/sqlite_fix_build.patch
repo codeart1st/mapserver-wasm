@@ -1,5 +1,5 @@
 diff --git a/main.mk b/main.mk
-index a0b08e5773..1b7620e303 100644
+index a0b08e5773..acdb284684 100644
 --- a/main.mk
 +++ b/main.mk
 @@ -1994,9 +1994,9 @@ xbin: threadtest5
@@ -14,12 +14,12 @@ index a0b08e5773..1b7620e303 100644
  		$(CFLAGS.readline) $(SHELL_OPT) $(CFLAGS.icu) \
  		$(LDFLAGS.libsqlite3) $(LDFLAGS.readline)
  #
-@@ -2352,7 +2352,7 @@ distclean:	distclean-. clean
- 
- 
- # Show important variable settings.
--show-variables:	
-+show-variables:
- 	@echo "CC          = $(CC)"
- 	@echo "B.cc        = $(B.cc)"
- 	@echo "T.cc        = $(T.cc)"
+@@ -2019,7 +2019,7 @@ sqlite3d$(T.exe):	shell.c $(LIBOBJS0)
+ install-shell-0: sqlite3$(T.exe) $(install-dir.bin)
+ 	$(INSTALL) -s sqlite3$(T.exe) "$(install-dir.bin)"
+ install-shell-1:
+-install: install-shell-$(HAVE_WASI_SDK)
++install: install-shell-1
+
+ # How to build sqldiff$(T.exe) depends on $(LINK_TOOLS_DYNAMICALLY)
+ #
