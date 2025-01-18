@@ -208,7 +208,7 @@ jobs:
           git apply ../../patches/gdal_reduce_size.patch
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dist \
-            -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm -s ERROR_ON_UNDEFINED_SYMBOLS=0" \
+            -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm -s ERROR_ON_UNDEFINED_SYMBOLS=0" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm -s ERROR_ON_UNDEFINED_SYMBOLS=0" \
             -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a \
             -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a \
             -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a \
