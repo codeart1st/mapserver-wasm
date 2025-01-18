@@ -85,10 +85,9 @@ jobs:
             -DSQLITE_OMIT_TRUNCATE_OPTIMIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_AUTHORIZATION"
           export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
             -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
-          ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
-          # build amalgamation without emscripten
-          make sqlite3.c
           emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
+          # build amalgamation
+          emmake make sqlite3.c
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
@@ -213,7 +212,7 @@ jobs:
             -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a \
             -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a \
             -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a \
-            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF -ACCEPT_MISSING_SQLITE3_MUTEX_ALLOC=ON \
+            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF -DACCEPT_MISSING_SQLITE3_MUTEX_ALLOC=ON \
             -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
