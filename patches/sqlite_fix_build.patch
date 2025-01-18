@@ -1,16 +1,13 @@
-diff --git a/Makefile.in b/Makefile.in
-index e5d30d030..72476c153 100644
---- a/Makefile.in
-+++ b/Makefile.in
-@@ -655,9 +655,9 @@ libtclsqlite3.la:	tclsqlite.lo libsqlite3.la
- 		-version-info "8:6:8" \
- 		-avoid-version
+diff --git a/main.mk b/main.mk
+index a0b08e5773..acdb284684 100644
+--- a/main.mk
++++ b/main.mk
+@@ -2019,7 +2019,7 @@ sqlite3d$(T.exe):	shell.c $(LIBOBJS0)
+ install-shell-0: sqlite3$(T.exe) $(install-dir.bin)
+ 	$(INSTALL) -s sqlite3$(T.exe) "$(install-dir.bin)"
+ install-shell-1:
+-install: install-shell-$(HAVE_WASI_SDK)
++install: install-shell-1
 
--sqlite3$(TEXE):	shell.c sqlite3.c
-+sqlite3$(TEXE): sqlite3.c
- 	$(LTLINK) $(READLINE_FLAGS) $(SHELL_OPT) -o $@ \
--		shell.c sqlite3.c \
-+		sqlite3.c \
- 		$(LIBREADLINE) $(TLIBS) -rpath "$(libdir)"
-
- sqldiff$(TEXE):	$(TOP)/tool/sqldiff.c sqlite3.lo sqlite3.h
+ # How to build sqldiff$(T.exe) depends on $(LINK_TOOLS_DYNAMICALLY)
+ #

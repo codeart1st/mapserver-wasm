@@ -21,15 +21,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
       - name: Prepare build environemnt
         uses: ./.github/actions/prepare-build-env
-
-      - name: Install required tools
-        run: sudo apt-get update && sudo apt-get install -y automake pkgconf libtool
 
       - name: Configure build tools
         run: |
@@ -50,7 +47,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: libxml2
           path: dist/
@@ -63,36 +60,36 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
       - name: Prepare build environemnt
         uses: ./.github/actions/prepare-build-env
 
-      - name: Install required tools
-        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y tcl
-
-      - name: Configure build tools and compile
+      - name: Configure build tools
         run: |
           cd thirdparty/sqlite
           git apply ../../patches/sqlite_fix_build.patch
-          export OPT_FEATURE_FLAGS="-DSQLITE_OMIT_ALTERTABLE -DSQLITE_OMIT_ANALYZE -DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE \
+          export OPT_FEATURE_FLAGS="-DSQLITE_UNTESTABLE -DSQLITE_OMIT_SHARED_CACHE \
             -DSQLITE_OMIT_AUTOVACUUM -DSQLITE_OMIT_BLOB_LITERAL -DSQLITE_OMIT_CHECK -DSQLITE_OMIT_COMPILEOPTION_DIAGS \
             -DSQLITE_OMIT_DATETIME_FUNCS -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_FLAG_PRAGMAS \
             -DSQLITE_OMIT_GENERATED_COLUMNS -DSQLITE_OMIT_HEX_INTEGER -DSQLITE_OMIT_INTEGRITY_CHECK -DSQLITE_OMIT_INTROSPECTION_PRAGMAS \
-            -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_REINDEX -DSQLITE_OMIT_TCL_VARIABLE -DSQLITE_OMIT_TRACE \
+            -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_TCL_VARIABLE -DSQLITE_OMIT_TRACE \
             -DSQLITE_OMIT_TRUNCATE_OPTIMIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_AUTHORIZATION"
           export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
             -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
-          ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
-          # build amalgamation without emscripten
-          make sqlite3.c
-          emconfigure ./configure --disable-shared --prefix=$GITHUB_WORKSPACE/dist
+          emconfigure ./configure --disable-threadsafe --disable-shared --prefix=$GITHUB_WORKSPACE/dist
+
+      - name: Start compilation
+        run: |
+          cd thirdparty/sqlite
+          # build amalgamation
+          emmake make sqlite3.c
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: SQLite
           path: dist/
@@ -105,7 +102,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
@@ -125,7 +122,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: GEOS
           path: dist/
@@ -139,7 +136,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
@@ -170,7 +167,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: PROJ
           path: dist/
@@ -184,7 +181,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
@@ -213,7 +210,7 @@ jobs:
             -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a \
             -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a \
             -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a \
-            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF \
+            -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF -DACCEPT_MISSING_SQLITE3_MUTEX_ALLOC=ON \
             -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
@@ -222,7 +219,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: GDAL
           path: dist/
@@ -236,7 +233,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
@@ -283,7 +280,7 @@ jobs:
           cp ../src/*.h $GITHUB_WORKSPACE/dist/include
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: MapServer
           path: dist/
@@ -297,7 +294,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 
@@ -317,7 +314,7 @@ jobs:
         run: emmake make
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: WASM
           path: |
@@ -333,7 +330,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
 

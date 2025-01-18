@@ -1,21 +1,23 @@
 diff --git a/alg/CMakeLists.txt b/alg/CMakeLists.txt
-index fe008aa606..8b3d3bf159 100644
+index 98a86899f7..317d8a17af 100644
 --- a/alg/CMakeLists.txt
 +++ b/alg/CMakeLists.txt
-@@ -51,7 +51,7 @@ target_compile_options(alg PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${GDAL_CXX_WARNING_
- target_compile_options(alg PRIVATE $<$<COMPILE_LANGUAGE:C>:${GDAL_C_WARNING_FLAGS}>)
- 
- target_include_directories(
--  alg PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/marching_squares> $<TARGET_PROPERTY:gdal_GTIFF,SOURCE_DIR>
-+  alg PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/marching_squares>
-               $<TARGET_PROPERTY:gdal_vrt,SOURCE_DIR> $<TARGET_PROPERTY:gdal_MEM,SOURCE_DIR>)
+@@ -62,10 +62,6 @@ target_include_directories(
  set_property(TARGET alg PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  target_sources(${GDAL_LIB_TARGET_NAME} PRIVATE $<TARGET_OBJECTS:alg>)
+ 
+-if (GDAL_ENABLE_DRIVER_GTIFF)
+-  target_include_directories(alg PRIVATE $<TARGET_PROPERTY:gdal_GTIFF,SOURCE_DIR>)
+-endif()
+-
+ if (GDAL_USE_GEOS)
+   target_compile_definitions(alg PRIVATE -DHAVE_GEOS=1)
+   gdal_target_link_libraries(alg PRIVATE ${GEOS_TARGET})
 diff --git a/cmake/helpers/CheckDependentLibraries.cmake b/cmake/helpers/CheckDependentLibraries.cmake
-index 6f9ee274bf..af103ffec7 100644
+index 830ecef9a4..1a78af2ef4 100644
 --- a/cmake/helpers/CheckDependentLibraries.cmake
 +++ b/cmake/helpers/CheckDependentLibraries.cmake
-@@ -409,14 +409,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
+@@ -141,14 +141,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
      message(FATAL_ERROR "PROJ >= 6.3 required. Version ${PROJ_VERSION} found")
  endif()
  
@@ -25,43 +27,52 @@ index 6f9ee274bf..af103ffec7 100644
 -  URL "https://libtiff.gitlab.io/libtiff/"
 -  DESCRIPTION "Support for the Tag Image File Format (TIFF)."
 -  TYPE RECOMMENDED)
--gdal_internal_library(TIFF REQUIRED)
+-gdal_internal_library(TIFF)
 -
  if (DEFINED ENV{CONDA_PREFIX} AND UNIX)
      # Currently on Unix, the Zstd cmake config file is buggy. It declares a
      # libzstd_static target but the corresponding libzstd.a file is missing,
-@@ -430,11 +422,6 @@ gdal_check_package(ZSTD "ZSTD compression library" CAN_DISABLE ${ZSTD_NAMES_AND_
+@@ -162,8 +154,6 @@ gdal_check_package(ZSTD "ZSTD compression library" CAN_DISABLE ${ZSTD_NAMES_AND_
  gdal_check_package(SFCGAL "gdal core supports ISO 19107:2013 and OGC Simple Features Access 1.2 for 3D operations"
                     CAN_DISABLE)
  
--gdal_check_package(GeoTIFF "libgeotiff library (external)" CAN_DISABLE RECOMMENDED
--  NAMES GeoTIFF
--  TARGETS geotiff_library GEOTIFF::GEOTIFF
--)
--gdal_internal_library(GEOTIFF REQUIRED)
- 
+-include(CheckDependentLibrariesGeoTIFF)
+-
  gdal_check_package(PNG "PNG compression library (external)" CAN_DISABLE RECOMMENDED VERSION "1.6")
  gdal_internal_library(PNG)
+ 
 diff --git a/frmts/CMakeLists.txt b/frmts/CMakeLists.txt
-index fc9787f958..87df879313 100644
+index 26a45cfc53..1917272a50 100644
 --- a/frmts/CMakeLists.txt
 +++ b/frmts/CMakeLists.txt
-@@ -34,10 +34,7 @@ include(CMakeDependentOption)
+@@ -34,22 +34,7 @@ include(CMakeDependentOption)
  gdal_dependent_format(jpeg "JPEG image format" "GDAL_USE_JPEG OR GDAL_USE_JPEG_INTERNAL")
  
  # base driver provide frmt core functions
 -gdal_optional_format(raw "Raw formats:EOSAT FAST Format, FARSITE LCP and Vexcel MFF2 Image")
- # JPEG must be defined before GTiff
--gdal_format(gtiff "GeoTIFF image format")
+-# JPEG must be defined before GTiff
+ 
+-# Exception to the rule: enable the GTiff driver by default, even if
+-# GDAL_BUILD_OPTIONAL_DRIVERS=OFF.
+-if (NOT DEFINED GDAL_ENABLE_DRIVER_GTIFF AND
+-    DEFINED GDAL_BUILD_OPTIONAL_DRIVERS AND
+-    NOT GDAL_BUILD_OPTIONAL_DRIVERS AND
+-    (GDAL_USE_TIFF OR GDAL_USE_TIFF_INTERNAL) AND
+-    (GDAL_USE_GEOTIFF OR GDAL_USE_GEOTIFF_INTERNAL))
+-    message(WARNING "Enabling GDAL_ENABLE_DRIVER_GTIFF=ON, despite GDAL_BUILD_OPTIONAL_DRIVERS=OFF. You can of course override this choice by setting GDAL_ENABLE_DRIVER_GTIFF=OFF")
+-    option(GDAL_ENABLE_DRIVER_GTIFF "Set ON to build GeoTIFF image format format" ON)
+-endif()
+-
+-gdal_dependent_format(gtiff "GeoTIFF image format" "GDAL_USE_TIFF OR GDAL_USE_TIFF_INTERNAL;GDAL_USE_GEOTIFF OR GDAL_USE_GEOTIFF_INTERNAL")
 -set_package_properties(TIFF PROPERTIES PURPOSE "gdal_GTIFF: GeoTIFF image format")
  gdal_format(mem "Read/write data in Memory")
- gdal_format(vrt "Virtual GDAL Datasets")
- # Note: derived is derived of vrt
-@@ -49,125 +46,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
+ 
+ # Exception to the rule: enable the VRT driver by default, even if
+@@ -79,126 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
    gdal_optional_format(null "NULL dummy driver")
  endif ()
  
--gdal_format(hfa "Erdas Imagine .img")
+-gdal_optional_format(hfa "Erdas Imagine .img")
 -gdal_optional_format(sdts "SDTS translator")
 -gdal_optional_format(nitf "National Imagery Transmission Format")
 -gdal_optional_format(gxf "GXF")
@@ -100,6 +111,7 @@ index fc9787f958..87df879313 100644
 -gdal_optional_format(northwood "NWT_GRD/NWT_GRC -- Northwood/Vertical Mapper File Format")
 -gdal_optional_format(saga "SAGA GIS Binary Driver")
 -gdal_optional_format(xyz "ASCII Gridded XYZ")
+-include(avif/driver_declaration.cmake)
 -gdal_dependent_format(heif "HEIF" "GDAL_USE_HEIF")
 -gdal_optional_format(esric "ESRI compact cache")
 -gdal_optional_format(hf2 "HF2/HFZ heightfield raster")
@@ -120,6 +132,7 @@ index fc9787f958..87df879313 100644
 -gdal_optional_format(bmp "Microsoft Windows Device Independent Bitmap")
 -gdal_optional_format(tga "TGA")
 -gdal_optional_format(stacta "STACTA")
+-gdal_optional_format(snap_tiff "SNAP TIFF")
 -
 -# optional Formats
 -gdal_optional_format(bsb "Maptech/NOAA BSB Nautical Chart Format")
@@ -159,9 +172,9 @@ index fc9787f958..87df879313 100644
 -gdal_dependent_format(postgisraster "PostGIS Raster driver" "GDAL_USE_POSTGRESQL")
 -gdal_dependent_format(dds "DirectDraw Surface" "GDAL_USE_CRNLIB")
 -gdal_dependent_format(kea "Kea" "GDAL_USE_KEA;GDAL_USE_HDF5")
- gdal_dependent_format(openjpeg "JPEG2000 driver based on OpenJPEG library" "GDAL_USE_OPENJPEG" DRIVER_NAME_OPTION
-                       "JP2OpenJPEG")
--gdal_dependent_format(tiledb "TileDB tiledb.io" "GDAL_USE_TILEDB")
++
+ include(openjpeg/driver_declaration.cmake)
+-include(tiledb/driver_declaration.cmake)
 -gdal_dependent_format(exr "EXR support via OpenEXR library" "GDAL_USE_OPENEXR")
 -gdal_dependent_format(pcraster "PCRaster CSF 2.0 raster file driver" "GDAL_USE_LIBCSF OR GDAL_USE_LIBCSF_INTERNAL")
 -gdal_dependent_format(rdb "RIEGL RDB Map Pixel (.mpx) driver" "rdb_FOUND")
@@ -170,45 +183,50 @@ index fc9787f958..87df879313 100644
 -
 -# ######################################################################################################################
 -# driver with proprietary libraries Kakadu software SDK
--gdal_dependent_format(jp2kak "JPEG-2000 (based on Kakadu)" "GDAL_USE_KDU")
+-include(jp2kak/driver_declaration.cmake)
 -gdal_dependent_format(jpipkak "JPIP Streaming" "GDAL_USE_KDU")
 -# Luratech SDK
 -gdal_dependent_format(jp2lura "JPEG-2000 (based on Luratech)" "GDAL_USE_LURATECH")
 -# ESRI ArcSDE C API SDK
 -gdal_dependent_format(sde "ESRI ArcSDE Raster" "HAVE_SDE")
 -# LizardTech's decoding software development kit (DSDK)
--gdal_dependent_format(mrsid "Multi-resolution Seamless Image Database" "GDAL_USE_MRSID")
--gdal_dependent_format(georaster "Oracle Spatial GeoRaster" "GDAL_USE_ORACLE" DRIVER_NAME_OPTION GEOR)
--gdal_dependent_format(ecw "ERDAS JPEG2000 (.jp2)" "GDAL_USE_ECW")
+-include(mrsid/driver_declaration.cmake)
+-include(georaster/driver_declaration.cmake)
+-include(ecw/driver_declaration.cmake)
  
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index f8258bbdec..4981effb38 100644
+index a61970e9e1..cf1c608569 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
-@@ -68,7 +68,7 @@ target_compile_options(gcore PRIVATE ${GDAL_CXX_WARNING_FLAGS} ${WFLAG_OLD_STYLE
- target_include_directories(
-   gcore
-   PRIVATE $<TARGET_PROPERTY:ogrsf_generic,SOURCE_DIR> $<TARGET_PROPERTY:ogr_geojson,SOURCE_DIR>
--          $<TARGET_PROPERTY:gdal_GTIFF,SOURCE_DIR> $<TARGET_PROPERTY:gdal_MEM,SOURCE_DIR>
-+          $<TARGET_PROPERTY:gdal_MEM,SOURCE_DIR>
+@@ -73,11 +73,6 @@ target_include_directories(
            $<TARGET_PROPERTY:gdal_vrt,SOURCE_DIR>)
  set_property(TARGET gcore PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  
+-if (GDAL_ENABLE_DRIVER_GTIFF)
+-  target_include_directories(gcore PRIVATE $<TARGET_PROPERTY:gdal_GTIFF,SOURCE_DIR>)
+-  target_compile_definitions(gcore PRIVATE -DHAVE_TIFF)
+-endif()
+-
+ if (NOT DEFINED GDAL_RESOURCE_PATH)
+   message(FATAL_ERROR "GDAL_RESOURCE_PATH not set")
+ endif ()
 diff --git a/gcore/gdaljp2metadata.cpp b/gcore/gdaljp2metadata.cpp
-index 139c6940c2..b50c537b41 100644
+index e3f6442b2c..5a72a9a0a1 100644
 --- a/gcore/gdaljp2metadata.cpp
 +++ b/gcore/gdaljp2metadata.cpp
-@@ -52,7 +52,6 @@
+@@ -36,9 +36,6 @@
  #include "cpl_string.h"
  #include "cpl_minixml.h"
  #include "gdaljp2metadatagenerator.h"
+-#ifdef HAVE_TIFF
 -#include "gt_wkt_srs_for_gdal.h"
+-#endif
  #include "ogr_api.h"
  #include "ogr_core.h"
  #include "ogr_geometry.h"
-@@ -575,126 +574,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
+@@ -559,130 +556,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
      return TRUE;
  }
  
@@ -219,6 +237,7 @@ index 139c6940c2..b50c537b41 100644
 -int GDALJP2Metadata::ParseJP2GeoTIFF()
 -
 -{
+-#ifdef HAVE_TIFF
 -    if (!CPLTestBool(CPLGetConfigOption("GDAL_USE_GEOJP2", "TRUE")))
 -        return FALSE;
 -
@@ -330,12 +349,15 @@ index 139c6940c2..b50c537b41 100644
 -    }
 -
 -    return iBestIndex >= 0;
+-#else
+-    return false;
+-#endif
 -}
 -
  /************************************************************************/
  /*                             ParseMSIG()                              */
  /************************************************************************/
-@@ -1218,65 +1097,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
+@@ -1206,69 +1079,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
      papszRPCMD = CSLDuplicate(papszRPCMDIn);
  }
  
@@ -346,6 +368,7 @@ index 139c6940c2..b50c537b41 100644
 -GDALJP2Box *GDALJP2Metadata::CreateJP2GeoTIFF()
 -
 -{
+-#ifdef HAVE_TIFF
 -    /* -------------------------------------------------------------------- */
 -    /*      Prepare the memory buffer containing the degenerate GeoTIFF     */
 -    /*      file.                                                           */
@@ -371,6 +394,9 @@ index 139c6940c2..b50c537b41 100644
 -    CPLFree(pabyGTBuf);
 -
 -    return poBox;
+-#else
+-    return nullptr;
+-#endif
 -}
 -
 -/************************************************************************/
@@ -402,10 +428,10 @@ index 139c6940c2..b50c537b41 100644
  /*                     GetGMLJP2GeoreferencingInfo()                    */
  /************************************************************************/
 diff --git a/gdal.cmake b/gdal.cmake
-index 54cfbe13af..c7ca3338a4 100644
+index 0148674043..3eb0b512b5 100644
 --- a/gdal.cmake
 +++ b/gdal.cmake
-@@ -548,8 +548,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
+@@ -344,8 +344,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
  endif()
  
  # We need to forward declare a few OGR drivers because raster formats need them
@@ -415,24 +441,52 @@ index 54cfbe13af..c7ca3338a4 100644
                         "GDAL_USE_SQLITE3" OFF)
  cmake_dependent_option(OGR_ENABLE_DRIVER_GPKG "Set ON to build OGR GPKG driver" ${OGR_BUILD_OPTIONAL_DRIVERS}
 diff --git a/ogr/ogrsf_frmts/CMakeLists.txt b/ogr/ogrsf_frmts/CMakeLists.txt
-index f11285935d..7819c19ae6 100644
+index e4cd0c4f04..024a29b930 100644
 --- a/ogr/ogrsf_frmts/CMakeLists.txt
 +++ b/ogr/ogrsf_frmts/CMakeLists.txt
-@@ -13,105 +13,11 @@ add_dependencies(ogrsf_frmts generate_gdal_version_h)
- # Obligatory for building GDAL; always compile in.
- ogr_default_driver(mem "Read/write driver for MEMORY virtual files")
- ogr_default_driver(geojson "GeoJSON/ESRIJSON/TopoJSON driver")
--ogr_default_driver2(mitab TAB "MapInfo TAB and MIF/MID")
--ogr_default_driver(shape "ESRI shape-file")
+@@ -23,138 +23,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
+ endif()
+ ogr_optional_driver(geojson "GeoJSON/GeoJSONSeq/ESRIJSON/TopoJSON drivers")
+ 
+-add_feature_info(ogr_TAB OGR_ENABLE_DRIVER_TAB "MapInfo TAB and MIF/MID")
+-if (OGR_ENABLE_DRIVER_TAB)
+-    add_subdirectory(mitab)
+-endif ()
+-
+-# Exception to the rule: enable the Shapefile driver by default, even if
+-# OGR_BUILD_OPTIONAL_DRIVERS=OFF.
+-if (NOT DEFINED OGR_ENABLE_DRIVER_SHAPE AND
+-    DEFINED OGR_BUILD_OPTIONAL_DRIVERS AND
+-    NOT OGR_BUILD_OPTIONAL_DRIVERS)
+-    message(WARNING "Enabling OGR_ENABLE_DRIVER_SHAPE=ON, despite OGR_BUILD_OPTIONAL_DRIVERS=OFF. You can of course override this choice by setting OGR_ENABLE_DRIVER_SHAPE=OFF")
+-    option(OGR_ENABLE_DRIVER_SHAPE "Set ON to build Shapefile driver" ON)
+-endif()
+-ogr_optional_driver(shape "ESRI shape-file")
 -
 -# ######################################################################################################################
--ogr_default_driver(kml KML) # when not found EXPAT, it use CPL_MINIXML (ex. android)
--ogr_default_driver(vrt "VRT - Virtual Format")
+-ogr_optional_driver(kml KML) # when not found EXPAT, it use CPL_MINIXML (ex. android)
+-ogr_optional_driver(vrt "VRT - Virtual Format")
 -
 -# Caution: if modifying AVC declaration here, also modify it in gdal.cmake
 -ogr_optional_driver(avc AVC)
 -
--ogr_optional_driver(gml GML) # when not found both EXPAT/XercesC, return error in driver, referenced by WCS
+-if (NOT(DEFINED OGR_ENABLE_DRIVER_GML AND NOT OGR_ENABLE_DRIVER_GML AND
+-        ((NOT GDAL_USE_CURL) OR
+-         (DEFINED OGR_ENABLE_DRIVER_WFS AND NOT OGR_ENABLE_DRIVER_WFS AND
+-          DEFINED OGR_ENABLE_DRIVER_OAPIF AND NOT OGR_ENABLE_DRIVER_OAPIF AND
+-          DEFINED OGR_ENABLE_DRIVER_CSW AND NOT OGR_ENABLE_DRIVER_CSW))))
+-    # Only build gmlutils if we have GML, WFS, OAPIF or CSW
+-    add_subdirectory(gmlutils)
+-endif()
+-
+-if (GDAL_ENABLE_PLUGINS_NO_DEPS AND NOT DEFINED OGR_ENABLE_DRIVER_GML_PLUGIN)
+-    option(OGR_ENABLE_DRIVER_GML_PLUGIN "Set ON to build GML driver as a plugin" OFF)
+-endif ()
+-ogr_optional_driver(gml GML)
+-if (OGR_ENABLE_DRIVER_GML_PLUGIN AND
+-    ((NOT DEFINED OGR_ENABLE_DRIVER_NAS OR OGR_ENABLE_DRIVER_NAS)))
+-    message(FATAL_ERROR "When building the GML driver as a plugin, the NAS driver must be explicitly disabled with OGR_ENABLE_DRIVER_NAS=OFF")
+-endif()
 -
 -# ######################################################################################################################
 -ogr_optional_driver(csv CSV)
@@ -455,13 +509,16 @@ index f11285935d..7819c19ae6 100644
 -ogr_optional_driver(vdv "VDV-451/VDV-452/INTREST Data Format")
 -ogr_optional_driver(flatgeobuf FlatGeobuf)
 -ogr_optional_driver(mapml MapML)
--ogr_optional_driver(jsonfg JSONFG)
+-
 -if( NOT WORDS_BIGENDIAN )
 -    ogr_optional_driver(miramon "MiraMonVector")
 -endif()
 -
 -# ######################################################################################################################
 -#
+-if (NOT OGR_ENABLE_DRIVER_GEOJSON_PLUGIN)
+-    ogr_dependent_driver(jsonfg JSONFG "OGR_ENABLE_DRIVER_GEOJSON")
+-endif()
 -
 -ogr_dependent_driver(sdts SDTS "GDAL_ENABLE_DRIVER_SDTS")
 -
@@ -469,21 +526,23 @@ index f11285935d..7819c19ae6 100644
 -ogr_dependent_driver(gpx "GPX - GPS Exchange Format" "GDAL_USE_EXPAT")
 -ogr_dependent_driver(gmlas GMLAS "GDAL_USE_XERCESC;OGR_ENABLE_DRIVER_PGDUMP")
 -ogr_dependent_driver(svg "Scalable Vector Graphics" "GDAL_USE_EXPAT")
--ogr_dependent_driver(csw CSW "GDAL_USE_CURL;OGR_ENABLE_DRIVER_GML")
+-ogr_dependent_driver(csw CSW "GDAL_USE_CURL")
 -ogr_dependent_driver(dwg DWG "GDAL_USE_TEIGHA")
 -ogr_dependent_driver(filegdb FileGDB "GDAL_USE_FILEGDB")
 -ogr_dependent_driver(libkml LibKML "GDAL_USE_LIBKML")
 -ogr_dependent_driver(nas "NAS/ALKIS" "GDAL_USE_XERCESC;OGR_ENABLE_DRIVER_GML")
 -ogr_dependent_driver(plscenes PLSCENES "GDAL_USE_CURL")
 -ogr_dependent_driver(sosi "SOSI:Systematic Organization of Spatial Information" "GDAL_USE_FYBA")
--ogr_dependent_driver(wfs "OGC WFS service" "GDAL_USE_CURL;OGR_ENABLE_DRIVER_GML")
+-ogr_dependent_driver(wfs "OGC WFS service" "GDAL_USE_CURL")
+-ogr_dependent_driver(oapif "OGC API Features service" "GDAL_USE_CURL")
 -ogr_dependent_driver(ngw "NextGIS Web" "GDAL_USE_CURL")
 -ogr_dependent_driver(elastic "ElasticSearch" "GDAL_USE_CURL")
+-ogr_dependent_driver(xodr OpenDRIVE "GDAL_USE_OPENDRIVE;GDAL_USE_GEOS")
 -
 -ogr_dependent_driver(idrisi IDRISI "GDAL_ENABLE_DRIVER_IDRISI")
 -
--ogr_dependent_driver(pds "Planetary Data Systems TABLE" "GDAL_ENABLE_DRIVER_PDS;OGR_ENABLE_DRIVER_GML")
- 
+-ogr_dependent_driver(pds "Planetary Data Systems TABLE" "GDAL_ENABLE_DRIVER_PDS")
+-
  # Caution: if modifying SQLite declaration here, also modify it in gdal.cmake
  ogr_dependent_driver(sqlite "SQLite3 / Spatialite RDBMS" "GDAL_USE_SQLITE3")
  # Caution: if modifying GPKG declaration here, also modify it in gdal.cmake
@@ -508,14 +567,14 @@ index f11285935d..7819c19ae6 100644
 -ogr_dependent_driver(xls "Microsoft Office Excel(xls)" "GDAL_USE_FREEXL")
 -ogr_dependent_driver(mongodbv3 "MongoDB V3" "GDAL_USE_MONGOCXX")
 -ogr_dependent_driver(cad "OpenCAD" "GDAL_USE_OPENCAD OR GDAL_USE_OPENCAD_INTERNAL")
--ogr_dependent_driver(parquet "Parquet" "GDAL_USE_PARQUET")
--ogr_dependent_driver(arrow "Arrow" "GDAL_USE_ARROW")
+-include(parquet/driver_declaration.cmake)
+-include(arrow/driver_declaration.cmake)
 -
 -ogr_dependent_driver(gtfs "GTFS" "OGR_ENABLE_DRIVER_CSV")
 -
 -# ######################################################################################################################
 -# proprietary libraries
--ogr_dependent_driver(oci "Oracle OCI" "GDAL_USE_ORACLE")
+-include(oci/driver_declaration.cmake)
 -ogr_dependent_driver(idb "IDB" "GDAL_USE_IDB")
 -ogr_dependent_driver(ods ODS "GDAL_USE_EXPAT")
 -ogr_dependent_driver(ogdi "OGDI" "GDAL_USE_OGDI")
