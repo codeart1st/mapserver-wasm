@@ -28,9 +28,6 @@ jobs:
       - name: Prepare build environemnt
         uses: ./.github/actions/prepare-build-env
 
-      - name: Install required tools
-        run: sudo apt-get update && sudo apt-get install -y automake pkgconf libtool
-
       - name: Configure build tools
         run: |
           cd thirdparty/libxml2
@@ -70,10 +67,7 @@ jobs:
       - name: Prepare build environemnt
         uses: ./.github/actions/prepare-build-env
 
-      - name: Install required tools
-        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y tcl
-
-      - name: Configure build tools and compile
+      - name: Configure build tools
         run: |
           cd thirdparty/sqlite
           git apply ../../patches/sqlite_fix_build.patch
@@ -86,6 +80,10 @@ jobs:
           export CFLAGS="-DSQLITE_ENABLE_RTREE -DSQLITE_DQS=0 -DSQLITE_THREADSAFE=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
             -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_USE_ALLOCA $OPT_FEATURE_FLAGS"
           emconfigure ./configure --disable-threadsafe --disable-shared --prefix=$GITHUB_WORKSPACE/dist
+
+      - name: Start compilation
+        run: |
+          cd thirdparty/sqlite
           # build amalgamation
           emmake make sqlite3.c
           emmake make install -j$(nproc)
