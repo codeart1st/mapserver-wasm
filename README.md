@@ -27,7 +27,7 @@
 |Name|Version|Home page|License|Status|
 |----|-------|---------|-------|-------|
 |**MapServer**|8.2.2|https://mapserver.org/|MIT|🚧|
-|**GDAL/OGR**|3.9.2|https://gdal.org/|MIT/X style|🚧|
+|**GDAL/OGR**|3.10.1|https://gdal.org/|MIT/X style|✅|
 |**PROJ**|9.5.1|https://proj.org/|MIT/X style|✅|
 |**GEOS**|3.13.0|https://libgeos.org/|LGPL-2.1|✅|
 |**SQLite**|3.48.0|https://www.sqlite.org/|Public Domain|✅|
@@ -107,7 +107,7 @@ git pull --recurse-submodules
 
 Start the build container with the following command to ensure the filesystem permissions for newly created files are correct.
 ```sh
-docker run -it --rm -v $(pwd):/src -v /etc/passwd:/etc/passwd --user "$(id -u):$(id -g)" --name mapserver-wasm emscripten/emsdk:4.0.1 bash
+docker run -it --rm -v $(pwd):/src -v /etc/passwd:/etc/passwd --user "$(id -u):$(id -g)" --name mapserver-wasm emscripten/emsdk:3.1.67 bash
 ```
 And execute in a second terminal the following command to install the missing build depedencies as root user.
 ```sh
