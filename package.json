@@ -38,6 +38,7 @@
     "@semantic-release/git": "10.0.1",
     "@semantic-release/github": "11.0.1",
     "jest-file-snapshot": "0.7.0",
+    "jsdom": "26.0.0",
     "semantic-release": "24.2.1",
     "sqlite3": "5.1.7",
     "vitest": "3.0.2",
