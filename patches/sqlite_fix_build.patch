@@ -2,18 +2,6 @@ diff --git a/main.mk b/main.mk
 index a0b08e5773..acdb284684 100644
 --- a/main.mk
 +++ b/main.mk
-@@ -1994,9 +1994,9 @@ xbin: threadtest5
- # runtime performance hit, which is fine for use in the shell but is
- # not appropriate for the canonical library build.
- #
--sqlite3$(T.exe):	shell.c sqlite3.c
-+sqlite3$(T.exe):	sqlite3.c
- 	$(T.link) -o $@ \
--		shell.c sqlite3.c \
-+		sqlite3.c \
- 		$(CFLAGS.readline) $(SHELL_OPT) $(CFLAGS.icu) \
- 		$(LDFLAGS.libsqlite3) $(LDFLAGS.readline)
- #
 @@ -2019,7 +2019,7 @@ sqlite3d$(T.exe):	shell.c $(LIBOBJS0)
  install-shell-0: sqlite3$(T.exe) $(install-dir.bin)
  	$(INSTALL) -s sqlite3$(T.exe) "$(install-dir.bin)"

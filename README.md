@@ -111,7 +111,7 @@ docker run -it --rm -v $(pwd):/src -v /etc/passwd:/etc/passwd --user "$(id -u):$
 ```
 And execute in a second terminal the following command to install the missing build depedencies as root user.
 ```sh
-docker exec --user root mapserver-wasm bash -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tcl automake pkgconf libtool brotli"
+docker exec --user root mapserver-wasm bash -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y brotli"
 ```
 After that execute all job script commands described in `.github/workflows/ci.yml` inside the interactive build container. It can be helpful to set the `GITHUB_WORKSPACE` environment variable beforehand.
 ```sh
