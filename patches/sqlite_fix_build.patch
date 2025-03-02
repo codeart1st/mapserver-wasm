@@ -1,13 +1,13 @@
 diff --git a/main.mk b/main.mk
-index a0b08e5773..acdb284684 100644
+index 808f925469..0ecddfaec7 100644
 --- a/main.mk
 +++ b/main.mk
-@@ -2019,7 +2019,7 @@ sqlite3d$(T.exe):	shell.c $(LIBOBJS0)
+@@ -2039,7 +2039,7 @@ sqlite3d$(T.exe):	shell.c $(LIBOBJS0)
  install-shell-0: sqlite3$(T.exe) $(install-dir.bin)
- 	$(INSTALL) -s sqlite3$(T.exe) "$(install-dir.bin)"
+ 	$(INSTALL) sqlite3$(T.exe) "$(install-dir.bin)"
  install-shell-1:
 -install: install-shell-$(HAVE_WASI_SDK)
 +install: install-shell-1
-
+ 
  # How to build sqldiff$(T.exe) depends on $(LINK_TOOLS_DYNAMICALLY)
  #
