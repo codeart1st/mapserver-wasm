@@ -144,7 +144,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.2.0
         with:
           name: SQLite
           path: dist/
@@ -189,7 +189,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.2.0
         with:
           pattern: '{SQLite,PROJ}'
           path: dist/
@@ -241,7 +241,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.2.0
         with:
           pattern: '{GDAL,GEOS,PROJ,libxml2}'
           path: dist/
@@ -302,7 +302,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.2.0
         with:
           name: MapServer
           path: dist/
@@ -338,7 +338,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.2.0
         with:
           name: WASM
           path: dist/
