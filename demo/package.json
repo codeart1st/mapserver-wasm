@@ -14,6 +14,6 @@
     "proj4": "2.15.0"
   },
   "devDependencies": {
-    "vite": "6.2.5"
+    "vite": "6.2.6"
   }
 }
