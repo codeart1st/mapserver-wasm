@@ -1,0 +1,26 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 69812f17..4978a555 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -411,10 +411,8 @@ set(PROJ_DICTIONARY
+ 
+ include_directories(${PROJ_SOURCE_DIR}/src)
+ 
+-add_subdirectory(data)
+ add_subdirectory(include)
+ add_subdirectory(src)
+-add_subdirectory(man)
+ add_subdirectory(cmake)
+ if(BUILD_TESTING)
+   add_subdirectory(test)
+@@ -427,10 +425,6 @@ endif()
+ 
+ add_subdirectory(scripts)
+ 
+-set(docfiles COPYING NEWS.md AUTHORS.md)
+-install(FILES ${docfiles}
+-        DESTINATION ${CMAKE_INSTALL_DOCDIR})
+-
+ ################################################################################
+ # pkg-config support
+ ################################################################################
