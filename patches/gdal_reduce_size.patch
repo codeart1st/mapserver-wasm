@@ -197,7 +197,7 @@ index 26a45cfc53..1917272a50 100644
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index a61970e9e1..cf1c608569 100644
+index 521f249ae1..ec7c5d2b16 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
 @@ -73,11 +73,6 @@ target_include_directories(
