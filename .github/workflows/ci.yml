@@ -10,7 +10,6 @@ on:
       - '!main'
       - '!beta'
       - '!alpha'
-  pull_request:
 
 permissions:
   contents: read
