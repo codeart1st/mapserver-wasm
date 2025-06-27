@@ -11,7 +11,7 @@
     "dexie": "4.0.11",
     "mapserver-wasm": "file:../",
     "ol": "10.6.1",
-    "proj4": "2.19.3"
+    "proj4": "2.19.4"
   },
   "devDependencies": {
     "vite": "7.0.0"
