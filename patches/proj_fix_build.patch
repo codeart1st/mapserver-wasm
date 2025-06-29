@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 69812f17..4978a555 100644
+index 20826ba3..f397684b 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -411,10 +411,8 @@ set(PROJ_DICTIONARY
+@@ -412,10 +412,8 @@ set(PROJ_DICTIONARY
  
  include_directories(${PROJ_SOURCE_DIR}/src)
  
@@ -13,7 +13,7 @@ index 69812f17..4978a555 100644
  add_subdirectory(cmake)
  if(BUILD_TESTING)
    add_subdirectory(test)
-@@ -427,10 +425,6 @@ endif()
+@@ -428,10 +426,6 @@ endif()
  
  add_subdirectory(scripts)
  
@@ -22,5 +22,5 @@ index 69812f17..4978a555 100644
 -        DESTINATION ${CMAKE_INSTALL_DOCDIR})
 -
  ################################################################################
- # pkg-config support
+ # Build debug symbols
  ################################################################################
