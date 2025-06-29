@@ -1,8 +1,8 @@
 diff --git a/alg/CMakeLists.txt b/alg/CMakeLists.txt
-index 98a86899f7..317d8a17af 100644
+index 3dce57504c..da77b637d4 100644
 --- a/alg/CMakeLists.txt
 +++ b/alg/CMakeLists.txt
-@@ -62,10 +62,6 @@ target_include_directories(
+@@ -68,10 +68,6 @@ target_include_directories(
  set_property(TARGET alg PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  target_sources(${GDAL_LIB_TARGET_NAME} PRIVATE $<TARGET_OBJECTS:alg>)
  
@@ -14,7 +14,7 @@ index 98a86899f7..317d8a17af 100644
    target_compile_definitions(alg PRIVATE -DHAVE_GEOS=1)
    gdal_target_link_libraries(alg PRIVATE ${GEOS_TARGET})
 diff --git a/cmake/helpers/CheckDependentLibraries.cmake b/cmake/helpers/CheckDependentLibraries.cmake
-index 830ecef9a4..1a78af2ef4 100644
+index abb5a4c5a2..e80c67b33e 100644
 --- a/cmake/helpers/CheckDependentLibraries.cmake
 +++ b/cmake/helpers/CheckDependentLibraries.cmake
 @@ -141,14 +141,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
@@ -42,7 +42,7 @@ index 830ecef9a4..1a78af2ef4 100644
  gdal_internal_library(PNG)
  
 diff --git a/frmts/CMakeLists.txt b/frmts/CMakeLists.txt
-index 26a45cfc53..1917272a50 100644
+index b5b85c5039..b56938b43b 100644
 --- a/frmts/CMakeLists.txt
 +++ b/frmts/CMakeLists.txt
 @@ -34,22 +34,7 @@ include(CMakeDependentOption)
@@ -68,29 +68,25 @@ index 26a45cfc53..1917272a50 100644
  gdal_format(mem "Read/write data in Memory")
  
  # Exception to the rule: enable the VRT driver by default, even if
-@@ -79,126 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
+@@ -79,114 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
    gdal_optional_format(null "NULL dummy driver")
  endif ()
  
+-gdal_optional_format(libertiff "GeoTIFF support through libertiff library")
 -gdal_optional_format(hfa "Erdas Imagine .img")
--gdal_optional_format(sdts "SDTS translator")
 -gdal_optional_format(nitf "National Imagery Transmission Format")
 -gdal_optional_format(gxf "GXF")
 -gdal_optional_format(aaigrid "Arc/Info ASCII Grid Format.")
 -gdal_optional_format(ceos "CEOS translator")
 -gdal_optional_format(ceos2 "ASI CEOS translator" DRIVER_NAME_OPTION "SAR_CEOS")
--gdal_optional_format(xpm "XPM image format")
 -gdal_optional_format(dted "Military Elevation Data")
 -gdal_optional_format(jdem "JDEM driver")
 -gdal_optional_format(envisat "Envisat")
--gdal_optional_format(elas "Earth Resources Laboratory Applications Software")
--gdal_optional_format(fit "FIT driver")
 -gdal_optional_format(l1b "NOAA Polar Orbiter Level 1b Data Set (AVHRR)")
 -gdal_optional_format(rs2 "RS2 -- RadarSat 2 XML Product")
 -gdal_optional_format(ilwis "Raster Map")
 -gdal_optional_format(rmf "RMF --- Raster Matrix Format")
 -gdal_optional_format(leveller "Daylon Leveller heightfield")
--gdal_optional_format(sgi "SGI Image driver")
 -gdal_optional_format(srtmhgt "SRTM HGT File Read Support")
 -gdal_optional_format(idrisi "Idrisi Raster Format")
 -gdal_optional_format(gsg "Implements the Golden Software Surfer 7 Binary Grid Format.")
@@ -104,10 +100,8 @@ index 26a45cfc53..1917272a50 100644
 -gdal_optional_format(coasp "DRDC Configurable Airborne SAR Processor (COASP) data reader")
 -gdal_optional_format(tsx "TerraSAR-X XML Product Support")
 -gdal_optional_format(terragen "Terragen&trade; Terrain File")
--gdal_optional_format(blx "Magellan BLX Topo File Format")
 -gdal_optional_format(msgn "Meteosat Second Generation (MSG) Native Archive Format (.nat)")
 -gdal_optional_format(til "EarthWatch .TIL Driver")
--gdal_optional_format(r "R Object Data Store")
 -gdal_optional_format(northwood "NWT_GRD/NWT_GRC -- Northwood/Vertical Mapper File Format")
 -gdal_optional_format(saga "SAGA GIS Binary Driver")
 -gdal_optional_format(xyz "ASCII Gridded XYZ")
@@ -134,12 +128,10 @@ index 26a45cfc53..1917272a50 100644
 -gdal_optional_format(stacta "STACTA")
 -gdal_optional_format(snap_tiff "SNAP TIFF")
 -
--# optional Formats
 -gdal_optional_format(bsb "Maptech/NOAA BSB Nautical Chart Format")
 -gdal_dependent_format(aigrid "Arc/Info Binary Grid Format" "OGR_ENABLE_DRIVER_AVC")
 -gdal_optional_format(usgsdem "USGS ASCII DEM (and CDED)")
 -gdal_optional_format(airsar "AirSAR Polarimetric Format")
--gdal_optional_format(ozi "OZF2/OZFX3 raster")
 -gdal_optional_format(pcidsk "PCI Geomatics Database File")
 -gdal_optional_format(sigdem "Scaled Integer Gridded DEM .sigdem Driver")
 -gdal_dependent_format(msg "Meteosat Second Generation" "GDAL_USE_PUBLICDECOMPWT")
@@ -147,6 +139,8 @@ index 26a45cfc53..1917272a50 100644
 -gdal_optional_format(stacit "STACIT")
 -gdal_optional_format(pdf "Geospatial PDF") # write only if none of GDAL_USE_POPPLER, GDAL_USE_PODOFO or GDAL_USE_PDFIUM
 -                                           # is set
+-gdal_optional_format(rcm "Radarsat Constellation Mission")
+-gdal_optional_format(gdalg "GDAL Streamed Algorithm Format")
 -
  # formats with external library dependency
  gdal_dependent_format(png "PNG image format" "GDAL_USE_PNG OR GDAL_USE_PNG_INTERNAL")
@@ -167,7 +161,6 @@ index 26a45cfc53..1917272a50 100644
 -gdal_dependent_format(gta "Generic Tagged Arrays" "GDAL_USE_GTA")
 -gdal_dependent_format(webp "WebP" "GDAL_USE_WEBP")
 -gdal_dependent_format(hdf4 "Hierarchical Data Format Release 4 (HDF4)" "GDAL_USE_HDF4")
--gdal_dependent_format(rasterlite "Rasterlite - Rasters in SQLite DB" "GDAL_USE_SQLITE3;OGR_ENABLE_DRIVER_SQLITE")
 -gdal_dependent_format(mbtiles "MBTile" "GDAL_USE_SQLITE3;OGR_ENABLE_DRIVER_GPKG;OGR_ENABLE_DRIVER_MVT")
 -gdal_dependent_format(postgisraster "PostGIS Raster driver" "GDAL_USE_POSTGRESQL")
 -gdal_dependent_format(dds "DirectDraw Surface" "GDAL_USE_CRNLIB")
@@ -177,7 +170,6 @@ index 26a45cfc53..1917272a50 100644
 -include(tiledb/driver_declaration.cmake)
 -gdal_dependent_format(exr "EXR support via OpenEXR library" "GDAL_USE_OPENEXR")
 -gdal_dependent_format(pcraster "PCRaster CSF 2.0 raster file driver" "GDAL_USE_LIBCSF OR GDAL_USE_LIBCSF_INTERNAL")
--gdal_dependent_format(rdb "RIEGL RDB Map Pixel (.mpx) driver" "rdb_FOUND")
 -gdal_dependent_format(jpegxl "JPEG-XL" "GDAL_USE_JXL")
 -gdal_dependent_format(basisu_ktx2 "Basis Universal and KTX2 texture formats" "GDAL_USE_BASISU")
 -
@@ -185,10 +177,6 @@ index 26a45cfc53..1917272a50 100644
 -# driver with proprietary libraries Kakadu software SDK
 -include(jp2kak/driver_declaration.cmake)
 -gdal_dependent_format(jpipkak "JPIP Streaming" "GDAL_USE_KDU")
--# Luratech SDK
--gdal_dependent_format(jp2lura "JPEG-2000 (based on Luratech)" "GDAL_USE_LURATECH")
--# ESRI ArcSDE C API SDK
--gdal_dependent_format(sde "ESRI ArcSDE Raster" "HAVE_SDE")
 -# LizardTech's decoding software development kit (DSDK)
 -include(mrsid/driver_declaration.cmake)
 -include(georaster/driver_declaration.cmake)
@@ -197,10 +185,10 @@ index 26a45cfc53..1917272a50 100644
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index 521f249ae1..ec7c5d2b16 100644
+index 3fb967e422..49dce607a7 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
-@@ -73,11 +73,6 @@ target_include_directories(
+@@ -83,11 +83,6 @@ target_include_directories(
            $<TARGET_PROPERTY:gdal_vrt,SOURCE_DIR>)
  set_property(TARGET gcore PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  
@@ -213,7 +201,7 @@ index 521f249ae1..ec7c5d2b16 100644
    message(FATAL_ERROR "GDAL_RESOURCE_PATH not set")
  endif ()
 diff --git a/gcore/gdaljp2metadata.cpp b/gcore/gdaljp2metadata.cpp
-index e3f6442b2c..5a72a9a0a1 100644
+index 746184e80e..984b34ce15 100644
 --- a/gcore/gdaljp2metadata.cpp
 +++ b/gcore/gdaljp2metadata.cpp
 @@ -36,9 +36,6 @@
@@ -428,10 +416,10 @@ index e3f6442b2c..5a72a9a0a1 100644
  /*                     GetGMLJP2GeoreferencingInfo()                    */
  /************************************************************************/
 diff --git a/gdal.cmake b/gdal.cmake
-index 0148674043..3eb0b512b5 100644
+index aa3128d202..af260918f9 100644
 --- a/gdal.cmake
 +++ b/gdal.cmake
-@@ -344,8 +344,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
+@@ -412,8 +412,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
  endif()
  
  # We need to forward declare a few OGR drivers because raster formats need them
@@ -441,10 +429,10 @@ index 0148674043..3eb0b512b5 100644
                         "GDAL_USE_SQLITE3" OFF)
  cmake_dependent_option(OGR_ENABLE_DRIVER_GPKG "Set ON to build OGR GPKG driver" ${OGR_BUILD_OPTIONAL_DRIVERS}
 diff --git a/ogr/ogrsf_frmts/CMakeLists.txt b/ogr/ogrsf_frmts/CMakeLists.txt
-index e4cd0c4f04..024a29b930 100644
+index 6615f175b2..5647d3830a 100644
 --- a/ogr/ogrsf_frmts/CMakeLists.txt
 +++ b/ogr/ogrsf_frmts/CMakeLists.txt
-@@ -23,138 +23,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
+@@ -20,134 +20,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
  endif()
  ogr_optional_driver(geojson "GeoJSON/GeoJSONSeq/ESRIJSON/TopoJSON drivers")
  
@@ -492,10 +480,7 @@ index e4cd0c4f04..024a29b930 100644
 -ogr_optional_driver(csv CSV)
 -ogr_optional_driver(dgn DGN)
 -ogr_optional_driver(gmt GMT)
--ogr_optional_driver(ntf NTF)
 -ogr_optional_driver(s57 S57)
--ogr_optional_driver(tiger "U.S. Census TIGER/Line")
--ogr_optional_driver(geoconcept GEOCONCEPT)
 -ogr_optional_driver(georss GEORSS)
 -ogr_optional_driver(dxf DXF)
 -ogr_optional_driver(pgdump PGDump)
@@ -509,10 +494,13 @@ index e4cd0c4f04..024a29b930 100644
 -ogr_optional_driver(vdv "VDV-451/VDV-452/INTREST Data Format")
 -ogr_optional_driver(flatgeobuf FlatGeobuf)
 -ogr_optional_driver(mapml MapML)
+-ogr_optional_driver(adbc ADBC)
 -
 -if( NOT WORDS_BIGENDIAN )
 -    ogr_optional_driver(miramon "MiraMonVector")
 -endif()
+-
+-ogr_optional_driver(aivector AIVector)
 -
 -# ######################################################################################################################
 -#
@@ -520,12 +508,9 @@ index e4cd0c4f04..024a29b930 100644
 -    ogr_dependent_driver(jsonfg JSONFG "OGR_ENABLE_DRIVER_GEOJSON")
 -endif()
 -
--ogr_dependent_driver(sdts SDTS "GDAL_ENABLE_DRIVER_SDTS")
--
 -# XML drivers
 -ogr_dependent_driver(gpx "GPX - GPS Exchange Format" "GDAL_USE_EXPAT")
 -ogr_dependent_driver(gmlas GMLAS "GDAL_USE_XERCESC;OGR_ENABLE_DRIVER_PGDUMP")
--ogr_dependent_driver(svg "Scalable Vector Graphics" "GDAL_USE_EXPAT")
 -ogr_dependent_driver(csw CSW "GDAL_USE_CURL")
 -ogr_dependent_driver(dwg DWG "GDAL_USE_TEIGHA")
 -ogr_dependent_driver(filegdb FileGDB "GDAL_USE_FILEGDB")
@@ -577,7 +562,6 @@ index e4cd0c4f04..024a29b930 100644
 -include(oci/driver_declaration.cmake)
 -ogr_dependent_driver(idb "IDB" "GDAL_USE_IDB")
 -ogr_dependent_driver(ods ODS "GDAL_USE_EXPAT")
--ogr_dependent_driver(ogdi "OGDI" "GDAL_USE_OGDI")
 -ogr_dependent_driver(lvbag "LVBAG" "GDAL_USE_EXPAT")
 -ogr_dependent_driver(hana "SAP HANA" "GDAL_USE_ODBCCPP;GDAL_USE_ODBC")
  
