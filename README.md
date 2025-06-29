@@ -31,7 +31,7 @@
 |**PROJ**|9.6.0|https://proj.org/|MIT/X style|🚧|
 |**GEOS**|3.13.1|https://libgeos.org/|LGPL-2.1|✅|
 |**SQLite**|3.49.1|https://www.sqlite.org/|Public Domain|🚧|
-|**Libxml2**|2.14.4|http://xmlsoft.org/|MIT|✅|
+|**Libxml2**|2.13.8|http://xmlsoft.org/|MIT|🚧|
 
 ✅ up-to-date | 🚧 needs-update | Last update check 29.06.2025
 
