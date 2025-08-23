@@ -28,12 +28,12 @@
 |----|-------|---------|-------|-------|
 |**MapServer**|8.4.0|https://mapserver.org/|MIT|✅|
 |**GDAL/OGR**|3.11.0|https://gdal.org/|MIT/X style|🚧|
-|**PROJ**|9.6.2|https://proj.org/|MIT/X style|🚧|
+|**PROJ**|9.6.2|https://proj.org/|MIT/X style|✅|
 |**GEOS**|3.14.0|https://libgeos.org/|LGPL-2.1|✅|
-|**SQLite**|3.50.2|https://www.sqlite.org/|Public Domain|🚧|
+|**SQLite**|3.50.4|https://www.sqlite.org/|Public Domain|✅|
 |**Libxml2**|2.13.8|http://xmlsoft.org/|MIT|🚧|
 
-✅ up-to-date | 🚧 needs-update | Last update check 29.06.2025
+✅ up-to-date | 🚧 needs-update | Last update check 23.08.2025
 
 # Getting started
 
