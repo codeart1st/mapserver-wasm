@@ -111,6 +111,7 @@ jobs:
       - name: Configure build tools
         run: |
           cd thirdparty/geos
+          git apply ../../patches/geos_fix_build.patch
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
