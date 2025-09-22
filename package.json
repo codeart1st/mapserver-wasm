@@ -39,7 +39,7 @@
     "@semantic-release/github": "11.0.6",
     "jest-file-snapshot": "0.7.0",
     "jsdom": "27.0.0",
-    "semantic-release": "24.2.8",
+    "semantic-release": "24.2.9",
     "sqlite3": "5.1.7",
     "vitest": "3.2.4",
     "vitest-fetch-mock": "0.4.5"
