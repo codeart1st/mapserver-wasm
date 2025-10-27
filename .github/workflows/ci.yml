@@ -46,7 +46,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: libxml2
           path: dist/
@@ -88,7 +88,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: SQLite
           path: dist/
@@ -122,7 +122,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: GEOS
           path: dist/
@@ -144,7 +144,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: SQLite
           path: dist/
@@ -167,7 +167,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: PROJ
           path: dist/
@@ -189,7 +189,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           pattern: '{SQLite,PROJ}'
           path: dist/
@@ -219,7 +219,7 @@ jobs:
           emmake make install -j$(nproc)
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: GDAL
           path: dist/
@@ -241,7 +241,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           pattern: '{GDAL,GEOS,PROJ,libxml2}'
           path: dist/
@@ -280,7 +280,7 @@ jobs:
           cp ../src/*.h $GITHUB_WORKSPACE/dist/include
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: MapServer
           path: dist/
@@ -302,7 +302,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: MapServer
           path: dist/
@@ -314,7 +314,7 @@ jobs:
         run: emmake make
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: WASM
           path: |
@@ -338,7 +338,7 @@ jobs:
         uses: ./.github/actions/prepare-build-env
 
       - name: Restore previous build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: WASM
           path: dist/
