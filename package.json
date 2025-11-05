@@ -41,7 +41,7 @@
     "jsdom": "27.1.0",
     "semantic-release": "25.0.1",
     "sqlite3": "5.1.7",
-    "vitest": "4.0.6",
+    "vitest": "4.0.7",
     "vitest-fetch-mock": "0.4.5"
   }
 }
