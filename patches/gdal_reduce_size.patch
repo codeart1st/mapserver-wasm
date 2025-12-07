@@ -1,8 +1,8 @@
 diff --git a/alg/CMakeLists.txt b/alg/CMakeLists.txt
-index 3dce57504c..da77b637d4 100644
+index c36faa8f5a..caacf0f550 100644
 --- a/alg/CMakeLists.txt
 +++ b/alg/CMakeLists.txt
-@@ -68,10 +68,6 @@ target_include_directories(
+@@ -69,10 +69,6 @@ target_include_directories(
  set_property(TARGET alg PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  target_sources(${GDAL_LIB_TARGET_NAME} PRIVATE $<TARGET_OBJECTS:alg>)
  
@@ -14,7 +14,7 @@ index 3dce57504c..da77b637d4 100644
    target_compile_definitions(alg PRIVATE -DHAVE_GEOS=1)
    gdal_target_link_libraries(alg PRIVATE ${GEOS_TARGET})
 diff --git a/cmake/helpers/CheckDependentLibraries.cmake b/cmake/helpers/CheckDependentLibraries.cmake
-index abb5a4c5a2..e80c67b33e 100644
+index ba99a00a67..d6054de298 100644
 --- a/cmake/helpers/CheckDependentLibraries.cmake
 +++ b/cmake/helpers/CheckDependentLibraries.cmake
 @@ -141,14 +141,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
@@ -42,7 +42,7 @@ index abb5a4c5a2..e80c67b33e 100644
  gdal_internal_library(PNG)
  
 diff --git a/frmts/CMakeLists.txt b/frmts/CMakeLists.txt
-index b5b85c5039..b56938b43b 100644
+index b6b0f5853b..b56938b43b 100644
 --- a/frmts/CMakeLists.txt
 +++ b/frmts/CMakeLists.txt
 @@ -34,22 +34,7 @@ include(CMakeDependentOption)
@@ -51,7 +51,7 @@ index b5b85c5039..b56938b43b 100644
  # base driver provide frmt core functions
 -gdal_optional_format(raw "Raw formats:EOSAT FAST Format, FARSITE LCP and Vexcel MFF2 Image")
 -# JPEG must be defined before GTiff
- 
+-
 -# Exception to the rule: enable the GTiff driver by default, even if
 -# GDAL_BUILD_OPTIONAL_DRIVERS=OFF.
 -if (NOT DEFINED GDAL_ENABLE_DRIVER_GTIFF AND
@@ -62,13 +62,13 @@ index b5b85c5039..b56938b43b 100644
 -    message(WARNING "Enabling GDAL_ENABLE_DRIVER_GTIFF=ON, despite GDAL_BUILD_OPTIONAL_DRIVERS=OFF. You can of course override this choice by setting GDAL_ENABLE_DRIVER_GTIFF=OFF")
 -    option(GDAL_ENABLE_DRIVER_GTIFF "Set ON to build GeoTIFF image format format" ON)
 -endif()
--
+ 
 -gdal_dependent_format(gtiff "GeoTIFF image format" "GDAL_USE_TIFF OR GDAL_USE_TIFF_INTERNAL;GDAL_USE_GEOTIFF OR GDAL_USE_GEOTIFF_INTERNAL")
 -set_package_properties(TIFF PROPERTIES PURPOSE "gdal_GTIFF: GeoTIFF image format")
  gdal_format(mem "Read/write data in Memory")
  
  # Exception to the rule: enable the VRT driver by default, even if
-@@ -79,114 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
+@@ -79,118 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
    gdal_optional_format(null "NULL dummy driver")
  endif ()
  
@@ -165,13 +165,16 @@ index b5b85c5039..b56938b43b 100644
 -gdal_dependent_format(postgisraster "PostGIS Raster driver" "GDAL_USE_POSTGRESQL")
 -gdal_dependent_format(dds "DirectDraw Surface" "GDAL_USE_CRNLIB")
 -gdal_dependent_format(kea "Kea" "GDAL_USE_KEA;GDAL_USE_HDF5")
-+
- include(openjpeg/driver_declaration.cmake)
+-include(openjpeg/driver_declaration.cmake)
 -include(tiledb/driver_declaration.cmake)
 -gdal_dependent_format(exr "EXR support via OpenEXR library" "GDAL_USE_OPENEXR")
 -gdal_dependent_format(pcraster "PCRaster CSF 2.0 raster file driver" "GDAL_USE_LIBCSF OR GDAL_USE_LIBCSF_INTERNAL")
 -gdal_dependent_format(jpegxl "JPEG-XL" "GDAL_USE_JXL")
 -gdal_dependent_format(basisu_ktx2 "Basis Universal and KTX2 texture formats" "GDAL_USE_BASISU")
+-if( NOT WORDS_BIGENDIAN )
+-    gdal_optional_format(miramon "MiraMonRaster")
+-endif()
+ 
 -
 -# ######################################################################################################################
 -# driver with proprietary libraries Kakadu software SDK
@@ -181,14 +184,15 @@ index b5b85c5039..b56938b43b 100644
 -include(mrsid/driver_declaration.cmake)
 -include(georaster/driver_declaration.cmake)
 -include(ecw/driver_declaration.cmake)
++include(openjpeg/driver_declaration.cmake)
  
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index 3fb967e422..49dce607a7 100644
+index 677c79b3f1..b084c1c86a 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
-@@ -83,11 +83,6 @@ target_include_directories(
+@@ -84,11 +84,6 @@ target_include_directories(
            $<TARGET_PROPERTY:gdal_vrt,SOURCE_DIR>)
  set_property(TARGET gcore PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  
@@ -201,10 +205,10 @@ index 3fb967e422..49dce607a7 100644
    message(FATAL_ERROR "GDAL_RESOURCE_PATH not set")
  endif ()
 diff --git a/gcore/gdaljp2metadata.cpp b/gcore/gdaljp2metadata.cpp
-index 746184e80e..984b34ce15 100644
+index 439b7e6625..05221d9e98 100644
 --- a/gcore/gdaljp2metadata.cpp
 +++ b/gcore/gdaljp2metadata.cpp
-@@ -36,9 +36,6 @@
+@@ -34,9 +34,6 @@
  #include "cpl_string.h"
  #include "cpl_minixml.h"
  #include "gdaljp2metadatagenerator.h"
@@ -214,7 +218,7 @@ index 746184e80e..984b34ce15 100644
  #include "ogr_api.h"
  #include "ogr_core.h"
  #include "ogr_geometry.h"
-@@ -559,130 +556,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
+@@ -554,119 +551,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
      return TRUE;
  }
  
@@ -231,7 +235,7 @@ index 746184e80e..984b34ce15 100644
 -
 -    bool abValidProjInfo[MAX_JP2GEOTIFF_BOXES] = {false};
 -    OGRSpatialReferenceH ahSRS[MAX_JP2GEOTIFF_BOXES] = {nullptr};
--    double aadfGeoTransform[MAX_JP2GEOTIFF_BOXES][6];
+-    std::array<GDALGeoTransform, MAX_JP2GEOTIFF_BOXES> aGT{};
 -    int anGCPCount[MAX_JP2GEOTIFF_BOXES] = {0};
 -    GDAL_GCP *apasGCPList[MAX_JP2GEOTIFF_BOXES] = {nullptr};
 -    int abPixelIsPoint[MAX_JP2GEOTIFF_BOXES] = {0};
@@ -245,17 +249,10 @@ index 746184e80e..984b34ce15 100644
 -        /*      Convert raw data into projection and geotransform. */
 -        /* --------------------------------------------------------------------
 -         */
--        aadfGeoTransform[i][0] = 0;
--        aadfGeoTransform[i][1] = 1;
--        aadfGeoTransform[i][2] = 0;
--        aadfGeoTransform[i][3] = 0;
--        aadfGeoTransform[i][4] = 0;
--        aadfGeoTransform[i][5] = 1;
 -        if (GTIFWktFromMemBufEx(pasGeoTIFFBoxes[i].nGeoTIFFSize,
 -                                pasGeoTIFFBoxes[i].pabyGeoTIFFData, &ahSRS[i],
--                                aadfGeoTransform[i], &anGCPCount[i],
--                                &apasGCPList[i], &abPixelIsPoint[i],
--                                &apapszRPCMD[i]) == CE_None)
+-                                aGT[i].data(), &anGCPCount[i], &apasGCPList[i],
+-                                &abPixelIsPoint[i], &apapszRPCMD[i]) == CE_None)
 -        {
 -            if (ahSRS[i] != nullptr)
 -                abValidProjInfo[i] = true;
@@ -282,10 +279,8 @@ index 746184e80e..984b34ce15 100644
 -    {
 -        for (int i = 0; i < nMax; ++i)
 -        {
--            if (aadfGeoTransform[i][0] != 0 || aadfGeoTransform[i][1] != 1 ||
--                aadfGeoTransform[i][2] != 0 || aadfGeoTransform[i][3] != 0 ||
--                aadfGeoTransform[i][4] != 0 || aadfGeoTransform[i][5] != 1 ||
--                anGCPCount[i] > 0 || apapszRPCMD[i] != nullptr)
+-            if (aGT[i] != GDALGeoTransform() || anGCPCount[i] > 0 ||
+-                apapszRPCMD[i] != nullptr)
 -            {
 -                iBestIndex = i;
 -            }
@@ -298,17 +293,15 @@ index 746184e80e..984b34ce15 100644
 -        if (ahSRS[iBestIndex])
 -            m_oSRS = *(OGRSpatialReference::FromHandle(ahSRS[iBestIndex]));
 -        m_oSRS.SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
--        memcpy(adfGeoTransform, aadfGeoTransform[iBestIndex],
--               6 * sizeof(double));
+-        m_gt = aGT[iBestIndex];
 -        nGCPCount = anGCPCount[iBestIndex];
 -        pasGCPList = apasGCPList[iBestIndex];
 -        bPixelIsPoint = CPL_TO_BOOL(abPixelIsPoint[iBestIndex]);
 -        papszRPCMD = apapszRPCMD[iBestIndex];
 -
--        if (adfGeoTransform[0] != 0 || adfGeoTransform[1] != 1 ||
--            adfGeoTransform[2] != 0 || adfGeoTransform[3] != 0 ||
--            adfGeoTransform[4] != 0 || adfGeoTransform[5] != 1)
--            bHaveGeoTransform = true;
+-        if (m_gt[0] != 0 || m_gt[1] != 1 || m_gt[2] != 0 || m_gt[3] != 0 ||
+-            m_gt[4] != 0 || m_gt[5] != 1)
+-            m_bHaveGeoTransform = true;
 -
 -        if (ahSRS[iBestIndex])
 -        {
@@ -345,7 +338,7 @@ index 746184e80e..984b34ce15 100644
  /************************************************************************/
  /*                             ParseMSIG()                              */
  /************************************************************************/
-@@ -1206,69 +1079,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
+@@ -1193,69 +1077,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
      papszRPCMD = CSLDuplicate(papszRPCMDIn);
  }
  
@@ -364,9 +357,9 @@ index 746184e80e..984b34ce15 100644
 -    int nGTBufSize = 0;
 -    unsigned char *pabyGTBuf = nullptr;
 -
--    if (GTIFMemBufFromSRS(OGRSpatialReference::ToHandle(&m_oSRS),
--                          adfGeoTransform, nGCPCount, pasGCPList, &nGTBufSize,
--                          &pabyGTBuf, bPixelIsPoint, papszRPCMD) != CE_None)
+-    if (GTIFMemBufFromSRS(OGRSpatialReference::ToHandle(&m_oSRS), m_gt.data(),
+-                          nGCPCount, pasGCPList, &nGTBufSize, &pabyGTBuf,
+-                          bPixelIsPoint, papszRPCMD) != CE_None)
 -        return nullptr;
 -
 -    if (nGTBufSize == 0)
@@ -416,10 +409,10 @@ index 746184e80e..984b34ce15 100644
  /*                     GetGMLJP2GeoreferencingInfo()                    */
  /************************************************************************/
 diff --git a/gdal.cmake b/gdal.cmake
-index aa3128d202..af260918f9 100644
+index 1fbaf19de6..a96478714a 100644
 --- a/gdal.cmake
 +++ b/gdal.cmake
-@@ -412,8 +412,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
+@@ -466,8 +466,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
  endif()
  
  # We need to forward declare a few OGR drivers because raster formats need them
