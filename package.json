@@ -40,8 +40,8 @@
     "jest-file-snapshot": "0.7.0",
     "jsdom": "28.1.0",
     "semantic-release": "25.0.3",
-    "sqlite3": "5.1.7",
-    "vitest": "4.0.18",
+    "sqlite3": "6.0.1",
+    "vitest": "4.1.0",
     "vitest-fetch-mock": "0.4.5"
   }
 }
