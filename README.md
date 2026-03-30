@@ -27,7 +27,7 @@
 |Name|Version|Home page|License|Status|
 |----|-------|---------|-------|-------|
 |**MapServer**|8.6.1|https://mapserver.org/|MIT|✅|
-|**GDAL/OGR**|3.12.0|https://gdal.org/|MIT/X style|🚧|
+|**GDAL/OGR**|3.12.3|https://gdal.org/|MIT/X style|✅|
 |**PROJ**|9.7.1|https://proj.org/|MIT/X style|🚧|
 |**GEOS**|3.14.1|https://libgeos.org/|LGPL-2.1|✅|
 |**SQLite**|3.51.3|https://www.sqlite.org/|Public Domain|✅|
