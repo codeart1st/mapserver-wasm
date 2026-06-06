@@ -1,8 +1,8 @@
 diff --git a/alg/CMakeLists.txt b/alg/CMakeLists.txt
-index c9df78b159..28613f534a 100644
+index c36faa8f5a..caacf0f550 100644
 --- a/alg/CMakeLists.txt
 +++ b/alg/CMakeLists.txt
-@@ -70,10 +70,6 @@ target_include_directories(
+@@ -69,10 +69,6 @@ target_include_directories(
  set_property(TARGET alg PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  target_sources(${GDAL_LIB_TARGET_NAME} PRIVATE $<TARGET_OBJECTS:alg>)
  
@@ -14,7 +14,7 @@ index c9df78b159..28613f534a 100644
    target_compile_definitions(alg PRIVATE -DHAVE_GEOS=1)
    gdal_target_link_libraries(alg PRIVATE ${GEOS_TARGET})
 diff --git a/cmake/helpers/CheckDependentLibraries.cmake b/cmake/helpers/CheckDependentLibraries.cmake
-index ca24b5479a..955a9b55e2 100644
+index ba99a00a67..d6054de298 100644
 --- a/cmake/helpers/CheckDependentLibraries.cmake
 +++ b/cmake/helpers/CheckDependentLibraries.cmake
 @@ -141,14 +141,6 @@ if ("${PROJ_VERSION}" VERSION_LESS "6.3")
@@ -42,7 +42,7 @@ index ca24b5479a..955a9b55e2 100644
  gdal_internal_library(PNG)
  
 diff --git a/frmts/CMakeLists.txt b/frmts/CMakeLists.txt
-index 3e8eadbcf7..b56938b43b 100644
+index b6b0f5853b..b56938b43b 100644
 --- a/frmts/CMakeLists.txt
 +++ b/frmts/CMakeLists.txt
 @@ -34,22 +34,7 @@ include(CMakeDependentOption)
@@ -68,7 +68,7 @@ index 3e8eadbcf7..b56938b43b 100644
  gdal_format(mem "Read/write data in Memory")
  
  # Exception to the rule: enable the VRT driver by default, even if
-@@ -79,121 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
+@@ -79,118 +64,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" OR GDAL_ENABLE_DRIVER_NULL)
    gdal_optional_format(null "NULL dummy driver")
  endif ()
  
@@ -141,7 +141,6 @@ index 3e8eadbcf7..b56938b43b 100644
 -                                           # is set
 -gdal_optional_format(rcm "Radarsat Constellation Mission")
 -gdal_optional_format(gdalg "GDAL Streamed Algorithm Format")
--gdal_optional_format(e57 "E57")
 -
  # formats with external library dependency
  gdal_dependent_format(png "PNG image format" "GDAL_USE_PNG OR GDAL_USE_PNG_INTERNAL")
@@ -175,8 +174,8 @@ index 3e8eadbcf7..b56938b43b 100644
 -if( NOT WORDS_BIGENDIAN )
 -    gdal_optional_format(miramon "MiraMonRaster")
 -endif()
--
  
+-
 -# ######################################################################################################################
 -# driver with proprietary libraries Kakadu software SDK
 -include(jp2kak/driver_declaration.cmake)
@@ -185,17 +184,15 @@ index 3e8eadbcf7..b56938b43b 100644
 -include(mrsid/driver_declaration.cmake)
 -include(georaster/driver_declaration.cmake)
 -include(ecw/driver_declaration.cmake)
--
--include(grok/driver_declaration.cmake)
 +include(openjpeg/driver_declaration.cmake)
  
  # Register all frmt drivers according to FRMT_<driver> flags
  gdal_standard_includes(gdal_frmts)
 diff --git a/gcore/CMakeLists.txt b/gcore/CMakeLists.txt
-index 55306dcaff..346de609f5 100644
+index 677c79b3f1..b084c1c86a 100644
 --- a/gcore/CMakeLists.txt
 +++ b/gcore/CMakeLists.txt
-@@ -108,11 +108,6 @@ target_include_directories(
+@@ -84,11 +84,6 @@ target_include_directories(
            $<TARGET_PROPERTY:gdal_vrt,SOURCE_DIR>)
  set_property(TARGET gcore PROPERTY POSITION_INDEPENDENT_CODE ${GDAL_OBJECT_LIBRARIES_POSITION_INDEPENDENT_CODE})
  
@@ -204,11 +201,11 @@ index 55306dcaff..346de609f5 100644
 -  target_compile_definitions(gcore PRIVATE -DHAVE_TIFF)
 -endif()
 -
- if (GDAL_ENABLE_ALGORITHMS)
- target_compile_definitions(gcore PRIVATE -DGDAL_ENABLE_ALGORITHMS)
- endif()
+ if (NOT DEFINED GDAL_RESOURCE_PATH)
+   message(FATAL_ERROR "GDAL_RESOURCE_PATH not set")
+ endif ()
 diff --git a/gcore/gdaljp2metadata.cpp b/gcore/gdaljp2metadata.cpp
-index a3c71d54c5..c2e3d74500 100644
+index 439b7e6625..05221d9e98 100644
 --- a/gcore/gdaljp2metadata.cpp
 +++ b/gcore/gdaljp2metadata.cpp
 @@ -34,9 +34,6 @@
@@ -221,7 +218,7 @@ index a3c71d54c5..c2e3d74500 100644
  #include "ogr_api.h"
  #include "ogr_core.h"
  #include "ogr_geometry.h"
-@@ -554,118 +551,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
+@@ -554,119 +551,6 @@ int GDALJP2Metadata::ReadBoxes(VSILFILE *fpVSIL)
      return TRUE;
  }
  
@@ -302,7 +299,8 @@ index a3c71d54c5..c2e3d74500 100644
 -        bPixelIsPoint = CPL_TO_BOOL(abPixelIsPoint[iBestIndex]);
 -        papszRPCMD = apapszRPCMD[iBestIndex];
 -
--        if (m_gt != GDALGeoTransform())
+-        if (m_gt[0] != 0 || m_gt[1] != 1 || m_gt[2] != 0 || m_gt[3] != 0 ||
+-            m_gt[4] != 0 || m_gt[5] != 1)
 -            m_bHaveGeoTransform = true;
 -
 -        if (ahSRS[iBestIndex])
@@ -340,10 +338,11 @@ index a3c71d54c5..c2e3d74500 100644
  /************************************************************************/
  /*                             ParseMSIG()                              */
  /************************************************************************/
-@@ -1194,70 +1079,7 @@ void GDALJP2Metadata::SetRPCMD(CSLConstList papszRPCMDIn)
+@@ -1193,69 +1077,6 @@ void GDALJP2Metadata::SetRPCMD(char **papszRPCMDIn)
+     papszRPCMD = CSLDuplicate(papszRPCMDIn);
  }
  
- /************************************************************************/
+-/************************************************************************/
 -/*                          CreateJP2GeoTIFF()                          */
 -/************************************************************************/
 -
@@ -406,17 +405,14 @@ index a3c71d54c5..c2e3d74500 100644
 -    return bRet;
 -}
 -
--/************************************************************************/
--/*                    GetGMLJP2GeoreferencingInfo()                     */
-+/*                     GetGMLJP2GeoreferencingInfo()                    */
  /************************************************************************/
- 
- void GDALJP2Metadata::GetGMLJP2GeoreferencingInfo(
+ /*                     GetGMLJP2GeoreferencingInfo()                    */
+ /************************************************************************/
 diff --git a/gdal.cmake b/gdal.cmake
-index c0b4a3f869..dff175ca9d 100644
+index 1fbaf19de6..a96478714a 100644
 --- a/gdal.cmake
 +++ b/gdal.cmake
-@@ -485,8 +485,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
+@@ -466,8 +466,6 @@ if(OGR_ENABLE_DRIVER_GPKG AND
  endif()
  
  # We need to forward declare a few OGR drivers because raster formats need them
@@ -426,10 +422,10 @@ index c0b4a3f869..dff175ca9d 100644
                         "GDAL_USE_SQLITE3" OFF)
  cmake_dependent_option(OGR_ENABLE_DRIVER_GPKG "Set ON to build OGR GPKG driver" ${OGR_BUILD_OPTIONAL_DRIVERS}
 diff --git a/ogr/ogrsf_frmts/CMakeLists.txt b/ogr/ogrsf_frmts/CMakeLists.txt
-index 25f1fbd5b9..5647d3830a 100644
+index 6615f175b2..5647d3830a 100644
 --- a/ogr/ogrsf_frmts/CMakeLists.txt
 +++ b/ogr/ogrsf_frmts/CMakeLists.txt
-@@ -20,129 +20,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
+@@ -20,134 +20,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
  endif()
  ogr_optional_driver(geojson "GeoJSON/GeoJSONSeq/ESRIJSON/TopoJSON drivers")
  
@@ -455,7 +451,14 @@ index 25f1fbd5b9..5647d3830a 100644
 -# Caution: if modifying AVC declaration here, also modify it in gdal.cmake
 -ogr_optional_driver(avc AVC)
 -
--add_subdirectory(gmlutils)
+-if (NOT(DEFINED OGR_ENABLE_DRIVER_GML AND NOT OGR_ENABLE_DRIVER_GML AND
+-        ((NOT GDAL_USE_CURL) OR
+-         (DEFINED OGR_ENABLE_DRIVER_WFS AND NOT OGR_ENABLE_DRIVER_WFS AND
+-          DEFINED OGR_ENABLE_DRIVER_OAPIF AND NOT OGR_ENABLE_DRIVER_OAPIF AND
+-          DEFINED OGR_ENABLE_DRIVER_CSW AND NOT OGR_ENABLE_DRIVER_CSW))))
+-    # Only build gmlutils if we have GML, WFS, OAPIF or CSW
+-    add_subdirectory(gmlutils)
+-endif()
 -
 -if (GDAL_ENABLE_PLUGINS_NO_DEPS AND NOT DEFINED OGR_ENABLE_DRIVER_GML_PLUGIN)
 -    option(OGR_ENABLE_DRIVER_GML_PLUGIN "Set ON to build GML driver as a plugin" OFF)
@@ -470,9 +473,7 @@ index 25f1fbd5b9..5647d3830a 100644
 -ogr_optional_driver(csv CSV)
 -ogr_optional_driver(dgn DGN)
 -ogr_optional_driver(gmt GMT)
--ogr_optional_driver(ntf NTF)
 -ogr_optional_driver(s57 S57)
--ogr_optional_driver(tiger "U.S. Census TIGER/Line")
 -ogr_optional_driver(georss GEORSS)
 -ogr_optional_driver(dxf DXF)
 -ogr_optional_driver(pgdump PGDump)
