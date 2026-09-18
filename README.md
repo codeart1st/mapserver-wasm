@@ -26,7 +26,7 @@
 
 |Name|Version|Home page|License|Status|
 |----|-------|---------|-------|-------|
-|**MapServer**|8.6.4|https://mapserver.org/|MIT|🚧|
+|**MapServer**|8.6.6|https://mapserver.org/|MIT|✅|
 |**GDAL/OGR**|3.12.0|https://gdal.org/|MIT/X style|🚧|
 |**PROJ**|9.8.1|https://proj.org/|MIT/X style|🚧|
 |**GEOS**|3.14.1|https://libgeos.org/|LGPL-2.1|🚧|
