@@ -17,7 +17,7 @@ permissions:
 jobs:
   libxml2:
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -56,7 +56,7 @@ jobs:
 
   SQLite:
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -98,7 +98,7 @@ jobs:
 
   GEOS:
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -133,7 +133,7 @@ jobs:
   PROJ:
     needs: [SQLite]
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -178,7 +178,7 @@ jobs:
   GDAL:
     needs: [SQLite, PROJ]
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -230,7 +230,7 @@ jobs:
   MapServer:
     needs: [GDAL, GEOS, PROJ, libxml2]
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -291,7 +291,7 @@ jobs:
   WASM:
     needs: [MapServer]
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
@@ -327,7 +327,7 @@ jobs:
   Vitest:
     needs: [WASM]
     timeout-minutes: 10
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v7.0.1
