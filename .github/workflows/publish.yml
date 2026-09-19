@@ -47,7 +47,7 @@ jobs:
         run: npm ci
 
       - name: Verify npm package signatures
-        run: npm audit signatures
+        run: npm audit signatures --omit=dev
 
       - name: Run semantic-release
         env:
