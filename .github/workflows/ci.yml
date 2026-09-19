@@ -113,6 +113,7 @@ jobs:
           cd thirdparty/geos
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DGEOS_BUILD_DEVELOPER=OFF \
             -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
       - name: Start compilation
@@ -208,7 +209,7 @@ jobs:
             -DCMAKE_CXX_FLAGS="-s SUPPORT_LONGJMP=wasm" -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm" \
             -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libproj.a \
             -DSQLite3_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DSQLite3_LIBRARY=$GITHUB_WORKSPACE/dist/lib/libsqlite3.a \
-            -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-wasm-sjlj.a \
+            -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten/libpng-legacysjlj.a \
             -DGDAL_USE_ICONV=OFF -DGDAL_USE_INTERNAL_LIBS=OFF -DENABLE_GNM=OFF -DENABLE_PAM=OFF -DACCEPT_MISSING_SQLITE3_MUTEX_ALLOC=ON \
             -DGDAL_USE_JSONC_INTERNAL=ON -DBUILD_APPS=OFF -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dist -DBUILD_TESTING=OFF ..
 
@@ -257,11 +258,12 @@ jobs:
           mkdir -p build && cd build
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DWITH_FRIBIDI=OFF -DWITH_HARFBUZZ=OFF -DWITH_ICONV=OFF -DWITH_CAIRO=OFF -DWITH_FCGI=OFF \
             -DWITH_POSTGIS=OFF -DWITH_WCS=OFF -DWITH_GIF=OFF -DWITH_PROTOBUFC=OFF -DCMAKE_C_FLAGS="-s SUPPORT_LONGJMP=wasm" \
+            -DLINK_STATIC_LIBMAPSERVER=ON \
             -DFREETYPE_INCLUDE_DIR=$EM_CACHE/sysroot/include/freetype2 -DFREETYPE_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
             -DJPEG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DJPEG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
             -DPNG_INCLUDE_DIR=$EM_CACHE/sysroot/include -DPNG_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
             -DZLIB_INCLUDE_DIR=$EM_CACHE/sysroot/include -DZLIB_LIBRARY=$EM_CACHE/sysroot/lib/wasm32-emscripten \
-            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE$GITHUB_WORKSPACE/dist/lib \
+            -DPROJ_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DPROJ_LIBRARY=$GITHUB_WORKSPACE/dist/lib \
             -DLIBXML2_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include/libxml2 -DLIBXML2_LIBRARY=$GITHUB_WORKSPACE/dist/lib \
             -DGDAL_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGDAL_LIBRARY=$GITHUB_WORKSPACE/dist/lib \
             -DGEOS_INCLUDE_DIR=$GITHUB_WORKSPACE/dist/include -DGEOS_LIBRARY=$GITHUB_WORKSPACE/dist/lib ..
@@ -269,12 +271,12 @@ jobs:
       - name: Start compilation
         run: |
           cd thirdparty/mapserver/build
-          emmake make mapserver -j$(nproc) # build mapserver.a target only
+          emmake make mapserver_static -j$(nproc) # build mapserver.a target only
 
       - name: Install artifacts
         run: |
           cd thirdparty/mapserver/build
-          cp libmapserver.a $GITHUB_WORKSPACE/dist/lib
+          cp libmapserver_static.a $GITHUB_WORKSPACE/dist/lib/libmapserver.a
           cp *.h $GITHUB_WORKSPACE/dist/include
           cp ../src/*.h $GITHUB_WORKSPACE/dist/include
 
@@ -333,9 +335,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Prepare build environemnt
-        uses: ./.github/actions/prepare-build-env
-
       - name: Restore previous build artifacts
         uses: actions/download-artifact@v8.0.1
         with:
@@ -345,5 +344,5 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Run jest tests
+      - name: Run Vitest
         run: npm test

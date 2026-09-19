@@ -18,7 +18,11 @@ const loadMapServer = async () => {
     if (!req.url.endsWith('mapserver-node.wasm')) {
       return { status: 404, body: 'Not Found' }
     }
-    return { status: 200, body: readFileSync('./dist/mapserver.wasm') }
+    return {
+      status: 200,
+      body: readFileSync('./dist/mapserver.wasm'),
+      headers: { 'Content-Type': 'application/wasm' }
+    }
   })
 
   return (await import('../dist/mapserver-node.js')).default()
