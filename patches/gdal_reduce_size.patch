@@ -427,7 +427,7 @@ diff --git a/ogr/ogrsf_frmts/CMakeLists.txt b/ogr/ogrsf_frmts/CMakeLists.txt
 index 25f1fbd5b9..5647d3830a 100644
 --- a/ogr/ogrsf_frmts/CMakeLists.txt
 +++ b/ogr/ogrsf_frmts/CMakeLists.txt
-@@ -20,129 +20,10 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
+@@ -20,129 +20,11 @@ if (NOT DEFINED OGR_ENABLE_DRIVER_GEOJSON AND
  endif()
  ogr_optional_driver(geojson "GeoJSON/GeoJSONSeq/ESRIJSON/TopoJSON drivers")
  
@@ -453,7 +453,7 @@ index 25f1fbd5b9..5647d3830a 100644
 -# Caution: if modifying AVC declaration here, also modify it in gdal.cmake
 -ogr_optional_driver(avc AVC)
 -
--add_subdirectory(gmlutils)
+ add_subdirectory(gmlutils)
 -
 -if (GDAL_ENABLE_PLUGINS_NO_DEPS AND NOT DEFINED OGR_ENABLE_DRIVER_GML_PLUGIN)
 -    option(OGR_ENABLE_DRIVER_GML_PLUGIN "Set ON to build GML driver as a plugin" OFF)
